@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rendely</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="favicon.jpg">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      
+      background-size: cover;
+      color: white;
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      height: 50px;
+      background: rgb(35, 35, 47);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
+    }
+
+    a {
+      text-decoration: none;
+      color: white;
+    }
+
+    main {
+      flex: 1;
+      padding: 2rem;
+      background: rgb(19, 19, 28);
+      background: url('dogs.png') repeat;
+      backdrop-filter: blur(4px);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      
+    }
+
+    .project-card {
+      background: rgba(30, 30, 60, 0.75);
+      border-radius: 1rem;
+      padding: 1rem;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s, background 0.3s;
+    }
+
+    .project-card:hover {
+      transform: scale(1.03);
+      background: rgba(50, 50, 100, 0.8);
+    }
+
+    .project-image {
+      width: 100%;
+      border-radius: 0.5rem;
+      height: 260px;
+      object-fit: cover;
+    }
+
+    .project-title {
+      font-size: 1.5rem;
+      margin-top: 1rem;
+      color: #ffdde1;
+    }
+
+    .project-description {
+      margin: 0.5rem 0;
+      color: #f0f8ff;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tag {
+      background: rgba(255, 240, 245, 0.6);
+      padding: 0.3rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      color: #4b0082;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <a href="#">Rendely</a>
+  </header>
+
+  <main>
+    <div class="grid">
+
+      <a href="https://linkedin.com/in/matthewrendely" target="_blank">
+        <div class="project-card">
+          <img src="linkedin.png" alt="LinkedIn" class="project-image" />
+          <div class="project-title">LinkedIn</div>
+          <div class="project-description">Learn about me.</div>
+          <div class="tags">
+            <div class="tag">Experiences</div>
+            <div class="tag">Networking</div>
+          </div>
+        </div>
+      </a>
+
+      <a href="https://week-vibes.vercel.app" target="_blank">
+        <div class="project-card">
+          <img src="week-vibes.jpg" alt="Week Vibes" class="project-image" />
+          <div class="project-title">Week Vibes</div>
+          <div class="project-description">Do good for you.</div>
+          <div class="tags">
+            <div class="tag">React</div>
+            <div class="tag">Vercel</div>
+            <div class="tag">Supabase</div>
+          </div>
+        </div>
+      </a>
+
+       <a href="https://rendely.github.io/meditation/" target="_blank">
+        <div class="project-card">
+          <img src="meditation.jpg" alt="Meditation timers" class="project-image" />
+          <div class="project-title">Meditation timers</div>
+          <div class="project-description">Simple tools for meditation.</div>
+          <div class="tags">
+            <div class="tag">Vibe</div>
+            <div class="tag">Coded</div>
+            <div class="tag">Github pages</div>
+          </div>
+        </div>
+      </a>
+
+
+    </div>
+  </main>
+</body>
+
+</html>
