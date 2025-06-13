@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rendely</title>
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/x-icon" href="favicon.jpg">
+  <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
   <style>
     * {
       box-sizing: border-box;
@@ -48,7 +48,7 @@
       flex: 1;
       padding: 2rem;
       background: rgb(19, 19, 28);
-      background: url('dogs.png') repeat;
+      background: url('images/dogs.jpg') repeat;
       backdrop-filter: blur(4px);
       display: flex;
       justify-content: center;
@@ -60,18 +60,10 @@
       gap: 2rem;
       width: 100%;
       justify-content: center;
+      /* max-width: 1000px; */
     }
 
-    @media (max-width: 768px) {
-      .grid {
-        gap: 1rem;
-      }
-      https://linkedin.com/in/matthewrendely
-      main {
-        padding: 1rem;
-      }
-    }
-
+    
     .project-card {
       background: rgba(30, 30, 60, 0.75);
       border-radius: 1rem;
@@ -79,8 +71,8 @@
       backdrop-filter: blur(6px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
       transition: transform 0.3s, background 0.3s;
-      flex: 1 1 350px;
-      width: 350px;
+      flex: 1 1 300px;
+      width: 300px;
     }
 
     @media (max-width: 600px) {
@@ -141,7 +133,7 @@
 
       <a href="https://linkedin.com/in/matthewrendely" target="_blank">
         <div class="project-card">
-          <img src="linkedin.png" alt="LinkedIn" class="project-image" />
+          <img src="images/linkedin.jpg" alt="LinkedIn" class="project-image" />
           <div class="project-title">LinkedIn</div>
           <div class="project-description">Get to know me.</div>
           <div class="tags">
@@ -153,7 +145,7 @@
 
       <a href="https://week-vibes.vercel.app" target="_blank">
         <div class="project-card">
-          <img src="week-vibes.jpg" alt="Week Vibes" class="project-image" />
+          <img src="images/week-vibes.jpeg" alt="Week Vibes" class="project-image" />
           <div class="project-title">Week Vibes</div>
           <div class="project-description">Do good for you, everyday.</div>
           <div class="tags">
@@ -166,13 +158,26 @@
 
        <a href="https://rendely.github.io/meditation/" target="_blank">
         <div class="project-card">
-          <img src="meditation.jpg" alt="Meditation timers" class="project-image" />
+          <img src="images/meditation.jpg" alt="Meditation timers" class="project-image" />
           <div class="project-title">Meditation timers</div>
           <div class="project-description">Calm your default mode network.</div>
           <div class="tags">
             <div class="tag">Vibe</div>
             <div class="tag">Coded</div>
             <div class="tag">Github pages</div>
+          </div>
+        </div>
+      </a>
+
+       <a href="https://open.spotify.com/show/2fPaYIMGV3P20sBKonSSzv" target="_blank">
+        <div class="project-card">
+          <img src="images/podcast.jpg" alt="Certainly uncertain podcast" class="project-image" />
+          <div class="project-title">Podcast</div>
+          <div class="project-description">Philosophize with me.</div>
+          <div class="tags">
+            <div class="tag">Podcast</div>
+            <div class="tag">Philosophy</div>
+            <div class="tag">Humor</div>
           </div>
         </div>
       </a>
