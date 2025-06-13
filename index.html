@@ -17,10 +17,11 @@
     html,
     body {
       height: 100%;
+      background: rgb(19, 19, 28);
     }
 
     body {
-      font-family: 'Quicksand', sans-serif;      
+      font-family: 'Quicksand', sans-serif;
       background-size: cover;
       color: white;
       backdrop-filter: blur(8px);
@@ -30,13 +31,17 @@
 
     header {
       padding: 1rem;
-      background: rgb(35, 35, 47);
+      background: rgb(30, 30, 30);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.2rem;
       font-weight: 600;
       text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 3;
     }
 
     a {
@@ -47,11 +52,10 @@
     main {
       flex: 1;
       padding: 2rem;
-      background: rgb(19, 19, 28);
-      background: url('images/dogs.jpg') repeat;
-      backdrop-filter: blur(4px);
+      background: url('images/dogs-bw.jpg') repeat;
       display: flex;
       justify-content: center;
+      margin-top: 3rem;
     }
 
     .grid {
@@ -63,11 +67,11 @@
       /* max-width: 1000px; */
     }
 
-    
+
     .project-card {
-      background: rgba(30, 30, 60, 0.75);
+      background: rgb(30, 30, 30);
       border-radius: 1rem;
-      padding: 1rem;
+      padding: 0.5rem;
       backdrop-filter: blur(6px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
       transition: transform 0.3s, background 0.3s;
@@ -79,7 +83,7 @@
       .project-card {
         flex: 1 1 100%;
         max-width: none;
-        width: 100vw;
+        width: 95vw;
       }
     }
 
@@ -156,7 +160,7 @@
         </div>
       </a>
 
-       <a href="https://rendely.github.io/meditation/" target="_blank">
+      <a href="https://rendely.github.io/meditation/" target="_blank">
         <div class="project-card">
           <img src="images/meditation.jpg" alt="Meditation timers" class="project-image" />
           <div class="project-title">Meditation timers</div>
@@ -169,7 +173,7 @@
         </div>
       </a>
 
-       <a href="https://open.spotify.com/show/2fPaYIMGV3P20sBKonSSzv" target="_blank">
+      <a href="https://open.spotify.com/show/2fPaYIMGV3P20sBKonSSzv" target="_blank">
         <div class="project-card">
           <img src="images/podcast.jpg" alt="Certainly uncertain podcast" class="project-image" />
           <div class="project-title">Podcast</div>
