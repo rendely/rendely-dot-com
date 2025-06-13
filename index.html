@@ -55,11 +55,21 @@
     }
 
     .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 280px));
+      display: flex;
+      flex-wrap: wrap;
       gap: 2rem;
-      max-width: 1000px;
       width: 100%;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        gap: 1rem;
+      }
+      https://linkedin.com/in/matthewrendely
+      main {
+        padding: 1rem;
+      }
     }
 
     .project-card {
@@ -69,6 +79,16 @@
       backdrop-filter: blur(6px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
       transition: transform 0.3s, background 0.3s;
+      flex: 1 1 350px;
+      width: 350px;
+    }
+
+    @media (max-width: 600px) {
+      .project-card {
+        flex: 1 1 100%;
+        max-width: none;
+        width: 100vw;
+      }
     }
 
     .project-card:hover {
