@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Build Generative AI Products: Intro for Product Managers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.jpg">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+      background: rgb(19, 19, 28);
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background-size: cover;
+      color: white;
+      backdrop-filter: blur(8px);
+    }
+
+    header {
+      padding: 1rem;
+      background: rgb(30, 30, 30);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 3;
+    }
+
+    a {
+      text-decoration: none;
+      color: white;
+    }
+
+    main {
+      
+      padding: 2rem;
+      background: url('images/dogs-bw.jpg') repeat;
+      max-width: 900px;
+      margin: 0 auto auto auto ;
+      
+    }
+
+    h1,h2,p {
+        margin-bottom: 1rem;
+    }
+
+    li {
+        margin-left: 1rem;
+        margin-bottom: 1rem;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <a href="https://rendely.com/">Rendely</a>
+  </header>
+
+<main>
+<h1>How to Build Generative AI Products: Intro for Product Managers</h1>
+<p><i>All views are my own and based on public information.</i></p>
+<p>You need a new set of product management skills to effectively build a product powered by generative AI. I’m sharing what I've learned in a series of posts. I hope it can help you and other PMs ramp up and spark some fun discussions along the way.</p>
+<h2>Build for where model capabilities will be in 6 months</h2>
+<p>Generative AI model capabilities are rapidly advancing. What's achievable today will be surpassed in a matter of months. This rapid advancement requires a product strategy and roadmap that anticipates future breakthroughs, rather than solely designing on current limitations. Build for the trend line.</p>
+<p>Tactically, that means understanding what the core capabilities are, and how quickly they’re improving across dimensions like quality, latency, cost, and input/output limits. Core capabilities include writing, coding, multi-modality, media generation (image/video/voice/music), agentic reasoning, and tool use.</p>
+
+<h2>Design with the probabilistic nature in mind</h2>
+<p>You’ve probably heard of the term “hallucinations”. These are an emergent behavior of the probabilistic nature of Generative AI model outputs. Even identical prompt inputs can produce varying results. Product development must account for this variability, guide users through iterative refinement, and manage their expectations regarding output accuracy and consistency.</p>
+<p>Make it easy for users to refresh their output or generate multiple outputs to choose from. Add deterministic guardrails to smooth out edge cases that could cause trouble.</p>
+<p>Get a feel for this by playing with the models and their parameters like temperature, either via the APIs or tools like Google AI Studio.</p>
+
+<h2>Increase your proficiency in writing and interpreting evals</h2>
+<p>Given the probabilistic nature of outputs, evaluating product quality requires new techniques. PMs, engineers and other XFN partners collaborate on "evals", a systematic approach to assess model performance. Your job is to curate high quality examples of ideal model behavior across various scenarios. These ideal examples (typically 10 to 100) function as product requirements for the model.</p>
+<p>By measuring how closely the model outputs align with these examples, teams can quantify and improve quality. You can scale this up by using GenAI to create more test cases and even to help evaluate them. This foundational skill will be explored further in a future article.</p>
+
+<h2>Learn about key safety risks and mitigations</h2>
+<p>Safety needs to be a first class citizen, not a last minute checkbox with AI. While models include built-in safeguards, sophisticated actors find ways to circumvent them through clever prompt engineering. This creates a perpetual cat-and-mouse dynamic where product teams must monitor and respond to new risks.</p>
+<p>Safety interventions directly impact quality and user experience, making them your responsibility to understand and navigate. You will accidentally block well-intended use cases as a side effect of catching harmful ones (classic precision/recall tradeoffs). Getting this balance right takes iteration and judgement.</p>
+<p>Keep up with industry news on the latest risks and mitigations. A non-exhaustive list: prompt injections, malicious user input, private data leakage, and inappropriate or biased outputs.</p>
+
+<h2>Get technical, upskill on prompt writing and context engineering</h2>
+<p>For the first time in history you can write product requirements (system prompts) that get committed in the code of your product. How cool is that? How you structure system instructions, user inputs, and context all impact the quality and user experience of your product. </p>
+<p>Become an expert in system prompts, where even small changes in wording, tone and provided examples can produce dramatically different outputs. Learn context engineering, which is providing the model the right supplementary information to improve relevance and accuracy. Optimize it through evals to find the right balance of quality, latency and cost tradeoffs.</p>
+<p>Start by reading the system prompts of the major LLM apps. Experiment with writing your own system prompts while building evals. We’ll dive deeper in an upcoming post with practical (but made up) examples.</p>
+
+<h2>Know your GenAI users and learn their needs</h2>
+<p>The user landscape for generative AI features is still taking shape, but several distinct segments have emerged:</p>
+<ol>
+<li>Students and Independent Learners: They turn to generative AI for learning, research, and creative assignments. Use cases include summarizing readings, drafting essays, researching complex topics, and brainstorming projects. Their primary goal: educational acceleration and comprehension.</li>
+<li>Software Developers: Among the most advanced and frequent GenAI adopters. They use AI for code generation, debugging, documentation, test writing, and even architecture design. Their core need: speeding up the development lifecycle and reducing cognitive load on repetitive tasks.</li>
+<li>Knowledge Workers: A broad segment covering multiple roles. They use GenAI for drafting emails, writing reports, summarizing meetings, generating proposals, and streamlining professional communication. Their key goal: brainstorming, time savings and faster content production.</li>
+<li>Content Creators and Creative Explorers: This includes both traditional creatives (designers, writers, artists, musicians) and non-experts experimenting with visual, audio, and written content. They use GenAI for ideation, draft generation, media editing, and rapid prototyping—aiming to expand creative output while reducing production time and cost. GenAI is democratizing content creation for this group.</li>
+<li>Companionship and Advice Seekers: These users engage with GenAI for personal interaction, emotional support, and unbiased perspectives. Use cases include conversational dialogue, advice-seeking, brainstorming, or simply having a non-judgmental thought partner. </li>
+</ol>
+<h2>Keep the discussion going</h2>
+<p>Thanks for reading! Which topics would you like to see a deeper dive into? What unique challenges or helpful advice do you have to share?</p>
+</main>
+</body>
+
+</html>
