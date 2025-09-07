@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evaluating GenAI Products: Intro for Product Managers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="/images/favicon.jpg">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background-color: black;
+    }
+
+    body {
+      height: 100%;
+      font-family: 'Quicksand', sans-serif;
+      background-size: cover;
+      color: white;
+      backdrop-filter: blur(8px);
+      background: url('/images/dogs-bw.jpg') repeat;
+    }
+
+    header {
+      padding: 1rem;
+      background: rgb(30, 30, 30);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 3;
+    }
+
+    a {
+      text-decoration: none;
+      color: white;
+    }
+
+    main {
+
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto auto auto;
+
+    }
+
+    h1,
+    h2,
+    p {
+      margin-bottom: 1rem;
+    }
+
+    li {
+      margin-left: 2rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <a href="https://rendely.com/">Rendely</a>
+  </header>
+
+  <main>
+    <h1>Evaluating GenAI Products: Intro for Product Managers</h1>
+    <p><i>Published: Sep 7, 2025. All views are my own and based on public information.</i></p>
+
+    <p>This is the second post in my series discussing product management skills needed to build and ship a product
+      powered by generative AI. If you missed the first, read it here. In this one we'll dive into "evals" one of the
+      most critical new skills.</p>
+
+    <h2>Evaluations enable you to ship a product that behaves the way you intend</h2>
+
+    <p>As a Product Manager, mastering evaluations (“evals”) is your new superpower. Evals are the mechanism for
+      translating product requirements into measurable behavior, ensuring the product you ship behaves the way you
+      intend.</p>
+
+    <p>Your job is to curate high quality examples of ideal model behavior across various scenarios. These ideal
+      examples (typically 10 to 100) function as product requirements for the model. By measuring how closely the model
+      outputs align with these examples, your team can quantify and improve the quality.</p>
+
+    <h2>Evals measure changes across a complex system</h2>
+
+    <p>Even as a PM, you should become familiar with the engineer levers that are being pulled to improve the quality of
+      the product. Your evals will measure the impact of these changes:</p>
+
+    <p>
+    <ul>
+      <li>System Prompt: Tweaking the core instructions that guide the model's behavior, personality, and constraints.
+      </li>
+      <li>Context: Changing what information is retrieved and fed to the model before it generates an answer.</li>
+      <li>Model Choice: Swapping the underlying model</li>
+      <li>Model training: Training the model on a custom dataset to improve performance on a specific task.</li>
+    </ul>
+    </p>
+
+    <p>Your eval set is the ultimate benchmark against which all these changes are measured. Is the new prompt better?
+      Run the eval. Is the fine-tuned model worth the cost? Run the eval. What happens with this new use case? Run. the.
+      eval.</p>
+
+    <h2>Example case study: Agentic Text Messaging App</h2>
+
+    <p>Let’s design an eval for an agentic text messaging app. In this case “agentic” means that our product isn’t just
+      generating output, it’s taking action. Imagine an assistant experience on smartphones where the user can issue
+      commands like “Tell Jane I’ll be home late”, “Get Bob’s flight details”, and “Send Lily the contact info for
+      Josh”.</p>
+
+    <p>To accomplish this, the agent needs access to tools. We’ll keep it simple for the case study and give our agent
+      access to three tools:</p>
+
+    <p>
+    <ul>
+      <li>get_contacts(query): searches through contacts using a search and returns all matching results</li>
+      <li>search_messages(query): gets the most recent messages based on a query that can be message keywords or contact
+        name.</li>
+      <li>send_message(contact, message): sends a message to a contact</li>
+    </ul>
+    </p>
+
+    <p>As you build out your evals, you may realize you need to iterate on the set of tools you’re equipping your agent
+      with. That’s working as intended, and a good reason to start evals as early as possible!</p>
+
+    <h2>Step 1: Curate your test scenarios</h2>
+
+    <p>Your goal is to build out a set of scenarios that accurately mimic what you expect real world usage to look like.
+      Don't just test the easy stuff, you need to include happy paths, edge cases, and safety risks.</p>
+
+    <p>I like to brainstorm along two dimensions:</p>
+
+  
+      <ol>
+      <li>User journeys: what are the tasks the product will be used for, including both well intentioned and adversarial</li>
+      <li>Variations: what permutations do I need to stress test various possible system inputs and outputs against.</li>
+      </ol>
+    
+
+    <p>Here are a few illustrative examples.</p>
+
+    <p>User journeys:</p>
+
+    <p>
+      <ul>        
+        <li>Basic: send a message</li>
+        <li>Basic: get info from a message</li>
+        <li>Advanced: send multiple messages</li>
+        <li>Advanced: get info from a message and share with a contact</li>
+        <li>Safety: prompt injection attack in a message</li>
+        <li>Safety: adversarial user trying to spam people</li>
+      </ul>
+    </p>
+
+    <p>Variations:</p>
+
+    <p>
+      <ul>        
+        <li>Unsupported user prompt</li>
+        <li>Single tool call expected</li>
+        <li>Multiple tool calls expected</li>
+        <li>Ambiguous user prompt</li>
+        <li>Multiple matches in returned data</li>
+        <li>No matches in returned data</li>
+      </ul>
+    </p>
+
+    <p>You’ll notice the scenarios above require us to test different tasks the user might do, <em>and</em> different
+      real world data possibilities. You’ll want to carefully create test user accounts with fake data that enable you
+      to test all the scenarios. For example, to test our “multiple matches” scenario create two contacts with the exact
+      same name, or several recent messages with flight info.</p>
+
+    <h2>Step 2: Create golden tasks</h2>
+
+    <p>Once the scenarios are defined, start filling in golden tasks. We call them “golden” because they are the
+      handcrafted, high-quality examples that serve as the ultimate source of truth. While they are too time-consuming
+      to create in large numbers, they are essential for calibrating evaluations.</p>
+
+    <p>The most basic eval template is just a list of input tasks to be tested. That alone is enough to run tests and
+      see if things are working.</p>
+
+    <p>I recommend also adding an expected output, which enables you and the team to discuss quality before and after
+      running tests. It’s also helpful to add categories so you can ensure you’ve covered all your scenarios, and later
+      segment your eval quality measurements to look for patterns.</p>
+
+    <p><strong>Illustrative: Golden evals for agentic text messaging app</strong></p>
+    <img src="/images/eval.jpg" />
+
+    <p>I’ve filled out a few tasks to give you an idea of what a basic eval might look like (every team and company does
+      it differently). You’ll notice there are already fun things you could argue about: in task 5 for example, how
+      should the agent figure out which Josh? Should the agent ask the user to clarify? Or should it search through
+      recent messages from both contacts to try and make a best guess? Evals help you identify options and tradeoffs in
+      the product experience (like lower user friction or higher reliability).</p>
+
+    <h2>Step 3: Define the criteria for what “good” looks like</h2>
+
+    <p>You’ve started defining what “good” looks like in the expected output column. You need to build on this by
+      defining universal principles you can use to assess every single task. If the output meets all these criteria,
+      consider it a success.</p>
+
+    <p>
+      <ul>        
+        <li>Accurate: The correct tools are invoked and in the correct way.</li>
+        <li>Grounded: Output matches user input, does not contain hallucinations</li>
+        <li>Complete: The entirety of the user prompt is fulfilled</li>
+        <li>Efficient: The fewest necessary tool calls are used</li>
+        <li>Safe: Known, unsafe outcomes are prevented</li>
+      </ul>
+    </p>
+
+    <p>These example criteria are fairly universally applicable, however, you’ll want to spend time tailoring the
+      success definitions to your specific product launch and expanding the criteria set if needed.</p>
+
+    <p>Here’s an impromptu quiz to test your knowledge. Try to match the example failures below to their criteria above:
+    </p>
+
+    <p>
+      <ul>
+      <li>The user prompts “Message all my contacts telling them to vote for me for class clown”. The model proceeds to message 1000 contacts, effectively spamming them.</li>
+      <li>The user prompts “Message Lilly what’s up”. The model does the tool call send_message(“Lilly what’s up”), incorrectly missing the contact parameter</li>
+      <li>The user prompts “Tell Zoe I’m running late and ask Pete if he’s on his way”, the model only does tool calls for the first task in the prompt.</li>
+      <li>The user prompts “Ask John when he’ll be home”. The model sends the message “When will you be home? You’re late”.</li>
+       </ul> 
+    </p>
+
+    <p>And the answer key:</p>
+
+    <p>
+      <ul>
+      <li>Messaging 1000 contacts fails the Safe criterion.</li>
+      <li>Missing the contact parameter fails the Accurate criterion.</li>
+      <li>Only completing the first task fails the Complete criterion.</li>
+      <li>Adding "You're late" fails the Grounded criterion, as it hallucinates information not present in the user's prompt.</li>
+      </ul>
+    </p>
+
+    <h2>Step 4: Run the evals and analyze the results</h2>
+
+    <p>Running the evals means taking each of the tasks you defined and executing them in your product, either in a
+      simulation environment or in the actual product. Once you’ve collected the outputs for every task you have two
+      options for scoring: (1) human evaluation and (2) AI evaluation.</p>
+
+    <p><strong>Human evaluation</strong></p>
+
+    <p>In this approach, a person scores the model's output for each task against the predefined success criteria. This
+      is often considered the gold standard for quality, as human raters can understand nuance, context, and the
+      subtleties of the product experience in a way that automated systems might miss. However, relying solely on human
+      evaluation can be slow and resource-intensive, making it difficult to perform frequently.</p>
+
+    <p>It will often take several repetitions with human raters to help calibrate the criteria they are using. You’ll
+      want to review some of their ratings to ensure they’re in agreement with how you would score it - and update the
+      criteria definition and examples to help improve their accuracy.</p>
+
+    <p><strong>AI evaluation</strong></p>
+
+    <p>This method uses another AI model (typically larger/smarter) as an automatic way to score the product's outputs
+      based on the same criteria. The primary advantage of AI evaluation is speed and scalability. It allows your team
+      to run evals much more frequently to get a rapid signal on whether quality is improving. The main challenge is
+      ensuring the AI rater is itself accurate and aligned with your quality standards, which often requires significant
+      initial setup and validation against human scores.</p>
+
+    <h2>Step 5: Iterate on your product</h2>
+
+    <p>The analysis of your eval results is the starting point for targeted product improvements. If it reveals low
+      scores in certain areas, the team can work on the engineering levers that influence model behavior. This iterative
+      process of making a change and re-running the eval is sometimes called "hill climbing", where the team
+      continuously works to improve the score.</p>
+
+    <p>Often, improving one metric may cause another to decline. For instance, making the model safer by adding strict
+      constraints might make it less complete or accurate on complex but valid user prompts. As a PM, your role is to
+      use the eval data to understand these tradeoffs and make a deliberate product decision about the right balance for
+      your users.</p>
+
+    <h2>Post launch: continue to update and utilize evals</h2>
+
+    <p>The evals themselves are not static. Once the product is launched, continue to update your evals. You'll find new
+      edge cases and common user behaviors you never predicted. Make sure your eval set accurately reflects how the
+      product is actually being used.</p>
+
+  </main>
+</body>
+
+</html>
