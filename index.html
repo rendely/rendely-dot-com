@@ -5,9 +5,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rendely</title>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Quicksand:wght@600&display=swap"
+    rel="stylesheet">
   <link rel="icon" type="image/x-icon" href="images/favicon.jpg">
   <style>
+    :root {
+      --bg: #0d111c;
+      --surface: rgba(18, 20, 32, 0.86);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(127, 116, 255, 0.46);
+      --text: #f5f7ff;
+      --muted: rgba(245, 247, 255, 0.68);
+      --accent: #7c74ff;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -17,219 +29,358 @@
     html,
     body {
       height: 100%;
-      background: rgb(19, 19, 28);
+      background: var(--bg);
     }
 
     body {
-      font-family: 'Quicksand', sans-serif;
-      background-size: cover;
-      color: white;
-      backdrop-filter: blur(8px);
+      min-height: 100vh;
+      font-family: 'Inter', 'Quicksand', sans-serif;
+      color: var(--text);
       display: flex;
       flex-direction: column;
+      position: relative;
     }
 
-    header {
-      padding: 1rem;
-      background: rgb(30, 30, 30);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      font-weight: 600;
-      text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
-      position: sticky;
-      top: 0;
-      width: 100%;
-      z-index: 3;
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(124, 116, 255, 0.25), transparent 55%),
+        radial-gradient(circle at 82% 0%, rgba(64, 201, 255, 0.14), transparent 50%),
+        linear-gradient(170deg, rgba(255, 255, 255, 0.05), transparent 65%);
+      pointer-events: none;
+      z-index: 0;
     }
 
     a {
+      color: inherit;
       text-decoration: none;
-      color: white;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, rgba(11, 13, 21, 0.92) 0%, rgba(11, 13, 21, 0.54) 100%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 1.6rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .brand {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+    }
+
+    .header-link {
+      font-size: 0.95rem;
+      color: rgba(245, 247, 255, 0.65);
+      transition: color 0.2s ease;
+    }
+
+    .header-link:hover {
+      color: #e6e8ff;
     }
 
     main {
       flex: 1;
-      padding: 2rem;
-      background: url('images/dogs-bw.jpg') repeat;
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 4.5rem 0 4rem;
       display: flex;
-      justify-content: center;
-      
+      flex-direction: column;
+      gap: 4rem;
+      position: relative;
+      z-index: 1;
     }
 
-    .grid {
+    .hero {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.35em;
+      color: rgba(245, 247, 255, 0.55);
+    }
+
+    .hero-title {
+      max-width: 640px;
+      font-size: clamp(2.15rem, 4vw, 2rem);
+      line-height: 1.18;
+      font-weight: 600;
+    }
+
+    .hero-copy {
+      max-width: 560px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .hero-links {
       display: flex;
       flex-wrap: wrap;
-      gap: 2rem;
-      width: 100%;
-      justify-content: center;
-      /* max-width: 1000px; */
+      gap: 0.9rem;
     }
 
+    .hero-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.15rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: #e6e8ff;
+      font-size: 0.92rem;
+      font-weight: 500;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .hero-link:hover {
+      transform: translateY(-2px);
+      border-color: rgba(124, 116, 255, 0.58);
+      background: rgba(124, 116, 255, 0.14);
+    }
+
+    .projects-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .projects-header h2 {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.28em;
+      color: rgba(245, 247, 255, 0.58);
+    }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+    }
 
     .project-card {
-      background: rgb(30, 30, 30);
-      border-radius: 1rem;
-      padding: 0.5rem;
-      backdrop-filter: blur(6px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-      transition: transform 0.3s, background 0.3s;
-      flex: 1 1 300px;
-      width: 300px;
-    }
-
-    @media (max-width: 600px) {
-      .project-card {
-        flex: 1 1 100%;
-        max-width: none;
-        width: 95vw;
-      }
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 1.1rem;
+      padding: 1.1rem;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+      min-height: 100%;
     }
 
     .project-card:hover {
-      transform: scale(1.03);
-      background: rgba(50, 50, 100, 0.8);
+      transform: translateY(-6px);
+      border-color: var(--border-strong);
+      box-shadow: 0 18px 44px rgba(8, 12, 22, 0.55);
     }
 
     .project-image {
       width: 100%;
-      border-radius: 0.5rem;
-      height: 260px;
+      border-radius: 0.9rem;
+      height: 220px;
       object-fit: cover;
     }
 
+    .project-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
     .project-title {
-      font-size: 1.5rem;
-      margin-top: 1rem;
-      color: #ffdde1;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #f2f4ff;
     }
 
     .project-description {
-      margin: 0.5rem 0;
-      color: #f0f8ff;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
     }
 
     .tags {
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
+      margin-top: 0.25rem;
     }
 
     .tag {
-      background: rgba(255, 240, 245, 0.6);
-      padding: 0.3rem 0.6rem;
+      background: rgba(124, 116, 255, 0.16);
+      padding: 0.25rem 0.7rem;
       border-radius: 999px;
-      font-size: 0.85rem;
-      color: #4b0082;
+      font-size: 0.8rem;
+      letter-spacing: 0.03em;
+      color: rgba(226, 228, 255, 0.8);
+      border: 1px solid rgba(124, 116, 255, 0.3);
     }
+
+    @media (max-width: 700px) {
+      .header-inner {
+        padding: 1.2rem 0;
+      }
+
+      .hero {
+        gap: 1.2rem;
+      }
+
+      .hero-title {
+        font-size: clamp(1.85rem, 7vw, 2.6rem);
+      }
+
+      .projects-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    
+
   </style>
 </head>
 
 <body>
 
   <header>
-    <a href="https://rendely.com/">Rendely</a>
+    <div class="header-inner">
+      <a class="brand" href="https://rendely.com/">Rendely</a>
+      <a class="header-link" href="https://linkedin.com/in/matthewrendely" target="_blank" rel="noreferrer">Connect</a>
+    </div>
   </header>
 
   <main>
-    <div class="grid">
+    <section class="hero">
+      <p class="hero-eyebrow">Product &amp; GenAI</p>
+      <h1 class="hero-title">Matthew Rendely</h1>
+      
+    </section>
 
-      <a href="https://linkedin.com/in/matthewrendely" target="_blank">
-        <div class="project-card">
+    <section class="projects">
+      <div class="projects-header">
+        <h2>Recent Work &amp; Writing</h2>
+      </div>
+
+      <div class="project-grid">
+        <a class="project-card" href="https://linkedin.com/in/matthewrendely" target="_blank" rel="noreferrer">
           <img src="images/linkedin.jpg" alt="LinkedIn" class="project-image" />
-          <div class="project-title">LinkedIn</div>
-          <div class="project-description">Get to know me.</div>
-          <div class="tags">
-            <div class="tag">Experiences</div>
-            <div class="tag">Networking</div>
-            <div class="tag">Posts</div>
+          <div class="project-content">
+            <div class="project-title">LinkedIn</div>
+            <div class="project-description">Experience highlights, product experiments, and current writing collected in one place.</div>
+            <div class="tags">
+              <div class="tag">Experiences</div>
+              <div class="tag">Networking</div>
+              <div class="tag">Posts</div>
+            </div>
           </div>
-        </div>
-      </a>
+        </a>
 
-      <a href="https://week-vibes.vercel.app" target="_blank">
-        <div class="project-card">
+        <a class="project-card" href="https://week-vibes.vercel.app" target="_blank" rel="noreferrer">
           <img src="images/week-vibes.jpeg" alt="Week Vibes" class="project-image" />
-          <div class="project-title">Week Vibes</div>
-          <div class="project-description">Do good for you, everyday.</div>
-          <div class="tags">
-            <div class="tag">React</div>
-            <div class="tag">Vercel</div>
-            <div class="tag">Supabase</div>
+          <div class="project-content">
+            <div class="project-title">Week Vibes</div>
+            <div class="project-description">Micro-actions that turn habit-building into a light, daily ritual.</div>
+            <div class="tags">
+              <div class="tag">React</div>
+              <div class="tag">Vercel</div>
+              <div class="tag">Supabase</div>
+            </div>
           </div>
-        </div>
-      </a>
+        </a>
 
-      <a href="https://rendely.github.io/meditation/" target="_blank">
-        <div class="project-card">
+        <a class="project-card" href="https://rendely.github.io/meditation/" target="_blank" rel="noreferrer">
           <img src="images/meditation.jpg" alt="Meditation timers" class="project-image" />
-          <div class="project-title">Meditation timers</div>
-          <div class="project-description">Calm your default mode network.</div>
-          <div class="tags">
-            <div class="tag">Vibe</div>
-            <div class="tag">Coded</div>
-            <div class="tag">Github pages</div>
+          <div class="project-content">
+            <div class="project-title">Meditation Timers</div>
+            <div class="project-description">Breath and reset timers for carving out quiet pockets in the week.</div>
+            <div class="tags">
+              <div class="tag">Vibe</div>
+              <div class="tag">Coded</div>
+              <div class="tag">GitHub Pages</div>
+            </div>
           </div>
-        </div>
-      </a>
+        </a>
 
-      <a href="https://open.spotify.com/show/2fPaYIMGV3P20sBKonSSzv" target="_blank">
-        <div class="project-card">
+        <a class="project-card" href="https://open.spotify.com/show/2fPaYIMGV3P20sBKonSSzv" target="_blank" rel="noreferrer">
           <img src="images/podcast.jpg" alt="Certainly uncertain podcast" class="project-image" />
-          <div class="project-title">Podcast</div>
-          <div class="project-description">Philosophize with me.</div>
-          <div class="tags">
-            <div class="tag">Podcast</div>
-            <div class="tag">Philosophy</div>
-            <div class="tag">Humor</div>
+          <div class="project-content">
+            <div class="project-title">Certainly Uncertain</div>
+            <div class="project-description">A podcast exploring philosophy, product, and the humor tucked into ambiguity.</div>
+            <div class="tags">
+              <div class="tag">Podcast</div>
+              <div class="tag">Philosophy</div>
+              <div class="tag">Humor</div>
+            </div>
           </div>
-        </div>
-      </a>
+        </a>
 
-       <a href="https://github.com/rendely/poker" target="_blank">
-        <div class="project-card">
-          <img src="images/poker.jpg" alt="Poker Github Repo" class="project-image" />
-          <div class="project-title">Poker Equity Simulator</div>
-          <div class="project-description">Learn poker hand equities.</div>
-          <div class="tags">
-            <div class="tag">Vibe</div>
-            <div class="tag">Coded</div>
-            <div class="tag">CLI</div>
+        <a class="project-card" href="https://github.com/rendely/poker" target="_blank" rel="noreferrer">
+          <img src="images/poker.jpg" alt="Poker GitHub repo" class="project-image" />
+          <div class="project-content">
+            <div class="project-title">Poker Equity Simulator</div>
+            <div class="project-description">A CLI trainer that makes the math behind poker equity second nature.</div>
+            <div class="tags">
+              <div class="tag">Vibe</div>
+              <div class="tag">Coded</div>
+              <div class="tag">CLI</div>
+            </div>
           </div>
-        </div>
-      </a>
+        </a>
 
-      <a href="https://www.rendely.com/posts/0-genai-pm-intro.html" target="_blank">
-        <div class="project-card">
-          <img src="images/ai-teacher.jpeg" alt="Poker Github Repo" class="project-image" />
-          <div class="project-title">How to Build Generative AI Products</div>
-          <div class="project-description">Intro for Product Managers</div>
-          <div class="tags">
-            <div class="tag">GenAI</div>
-            <div class="tag">PM</div>
-            <div class="tag">Learning</div>
-            <div class="tag">Posts</div>
+        <a class="project-card" href="https://www.rendely.com/posts/0-genai-pm-intro.html" target="_blank" rel="noreferrer">
+          <img src="images/ai-teacher.jpeg" alt="How to Build Generative AI Products" class="project-image" />
+          <div class="project-content">
+            <div class="project-title">How to Build Generative AI Products</div>
+            <div class="project-description">Product manager-friendly foundations for building with GenAI.</div>
+            <div class="tags">
+              <div class="tag">GenAI</div>
+              <div class="tag">PM</div>
+              <div class="tag">Learning</div>
+              <div class="tag">Posts</div>
+            </div>
           </div>
-        </div>
-      </a>
+        </a>
 
-       <a href="https://www.rendely.com/posts/1-evals-pm-intro.html" target="_blank">
-        <div class="project-card">
-          <img src="images/eval.jpg" alt="Poker Github Repo" class="project-image" />
-          <div class="project-title">Evaluating GenAI Products</div>
-          <div class="project-description">Intro for Product Managers</div>
-          <div class="tags">
-            <div class="tag">GenAI</div>
-            <div class="tag">PM</div>
-            <div class="tag">Learning</div>
-            <div class="tag">Posts</div>
+        <a class="project-card" href="https://www.rendely.com/posts/1-evals-pm-intro.html" target="_blank" rel="noreferrer">
+          <img src="images/eval.jpg" alt="Evaluating GenAI Products" class="project-image" />
+          <div class="project-content">
+            <div class="project-title">Evaluating GenAI Products</div>
+            <div class="project-description">A practical lens for measuring and iterating on GenAI experiences.</div>
+            <div class="tags">
+              <div class="tag">GenAI</div>
+              <div class="tag">PM</div>
+              <div class="tag">Learning</div>
+              <div class="tag">Posts</div>
+            </div>
           </div>
-        </div>
-      </a>
-
-
-    </div>
+        </a>
+      </div>
+    </section>
   </main>
 </body>
 
