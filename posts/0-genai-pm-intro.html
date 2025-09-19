@@ -8,53 +8,102 @@
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
   <link rel="icon" type="image/x-icon" href="/images/favicon.jpg">
   <style>
+     :root {
+      --bg: #0d111c;
+      --surface: rgba(18, 20, 32, 0.86);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(127, 116, 255, 0.46);
+      --text: #f5f7ff;
+      --muted: rgba(245, 247, 255, 0.68);
+      --accent: #7c74ff;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
-    html{
-      background-color: black;
+    html,
+    body {
+      height: 100%;
+      background: var(--bg);
     }
 
     body {
-      height: 100%;
-      font-family: 'Quicksand', sans-serif;
-      background-size: cover;
-      color: white;
-      backdrop-filter: blur(8px);
-      background: url('/images/dogs-bw.jpg') repeat;
+      min-height: 100vh;
+      font-family: 'Inter', 'Quicksand', sans-serif;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      position: relative;
     }
 
-    header {
-      padding: 1rem;
-      background: rgb(30, 30, 30);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      font-weight: 600;
-      text-shadow: 0 0 8px rgba(0, 0, 0, 0.7);
-      position: sticky;
-      top: 0;
-      width: 100%;
-      z-index: 3;
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(124, 116, 255, 0.25), transparent 55%),
+        radial-gradient(circle at 82% 0%, rgba(64, 201, 255, 0.14), transparent 50%),
+        linear-gradient(170deg, rgba(255, 255, 255, 0.05), transparent 65%);
+      pointer-events: none;
+      z-index: 0;
     }
 
     a {
+      color: inherit;
       text-decoration: none;
-      color: white;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, rgba(11, 13, 21, 0.92) 0%, rgba(11, 13, 21, 0.54) 100%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 1.6rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .brand {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+    }
+
+    .header-link {
+      font-size: 0.95rem;
+      color: rgba(245, 247, 255, 0.65);
+      transition: color 0.2s ease;
+    }
+
+    .header-link:hover {
+      color: #e6e8ff;
     }
 
     main {
-      
-      padding: 2rem;      
-      max-width: 900px;
-      margin: 0 auto auto auto ;
-      
+      flex: 1;
+      width: min(1100px, 92vw);
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 4.5rem 0 4rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 1;
     }
-
     h1,h2,p {
         margin-bottom: 1rem;
     }
@@ -69,8 +118,11 @@
 
 <body>
 
-  <header>
-    <a href="https://rendely.com/">Rendely</a>
+ <header>
+    <div class="header-inner">
+      <a class="brand" href="https://rendely.com/">Rendely</a>
+      <a class="header-link" href="https://linkedin.com/in/matthewrendely" target="_blank" rel="noreferrer">Connect</a>
+    </div>
   </header>
 
 <main>
