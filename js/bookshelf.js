@@ -54,10 +54,9 @@ function cancelAnimations(){animations.forEach(a=>a.cancel());animations=[];}
 function sourceTransform(){
   const source=buttons[selected].getBoundingClientRect();
   const target=spread.getBoundingClientRect();
-  const mobileBook=matchMedia('(max-width: 600px)').matches;
-  const x=target.left+target.width*(mobileBook?.5:.75);
+  const x=target.left+target.width*.75;
   const y=target.top+target.height/2;
-  return `translate(${source.left+source.width/2-x}px, ${source.top+source.height/2-y}px) scale(${source.width/(target.width/(mobileBook?1:2))}, ${source.height/target.height})`;
+  return `translate(${source.left+source.width/2-x}px, ${source.top+source.height/2-y}px) scale(${source.width/(target.width/2)}, ${source.height/target.height})`;
 }
 async function openBook(index){
   if(phase!=='idle')return;
@@ -67,7 +66,6 @@ async function openBook(index){
   document.querySelector('#book-category').textContent=`VOL. 0${index+1} / ${book.category}`;
   document.querySelector('#preview-category').textContent=book.category;
   const preview=document.querySelector('#preview-image');preview.src=book.image;preview.alt=book.title;
-  const mobilePreview=document.querySelector('#mobile-preview-image');mobilePreview.src=book.image;mobilePreview.alt='';
   document.querySelector('#book-link').href=book.url;
   document.querySelector('#flying-cover-image').src=covers[index].toDataURL();
   spread.classList.remove('settled');
