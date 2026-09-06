@@ -5,26 +5,136 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Evaluating GenAI Products: Intro for Product Managers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
   <link rel="icon" type="image/x-icon" sizes="16x16 32x32 64x64" href="/images/favicon.ico">
   <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
-  <meta name="theme-color" content="#f4f4ef">
-  <link rel="stylesheet" href="../css/bookshelf.css">
-  <link rel="stylesheet" href="../css/posts.css">
+  <style>
+     :root {
+      --bg: #0d111c;
+      --surface: rgba(18, 20, 32, 0.86);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(127, 116, 255, 0.46);
+      --text: #f5f7ff;
+      --muted: rgba(245, 247, 255, 0.68);
+      --accent: #7c74ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Inter', 'Quicksand', sans-serif;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(124, 116, 255, 0.25), transparent 55%),
+        radial-gradient(circle at 82% 0%, rgba(64, 201, 255, 0.14), transparent 50%),
+        linear-gradient(170deg, rgba(255, 255, 255, 0.05), transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, rgba(11, 13, 21, 0.92) 0%, rgba(11, 13, 21, 0.54) 100%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 1.6rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .brand {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+    }
+
+    .header-link {
+      font-size: 0.95rem;
+      color: rgba(245, 247, 255, 0.65);
+      transition: color 0.2s ease;
+    }
+
+    .header-link:hover {
+      color: #e6e8ff;
+    }
+
+    main {
+      flex: 1;
+      width: min(1100px, 92vw);
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 4.5rem 0 4rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 1;
+    }
+
+    img {
+      width: 100%;
+    }
+
+    h1,
+    h2,
+    p {
+      margin-bottom: 1rem;
+    }
+
+    li {
+      margin-left: 2rem;
+      margin-bottom: 1rem;
+    }
+  </style>
 </head>
 
-<body class="post-page">
+<body>
 
-  <header class="site-header">
-    <a class="brand" href="../">RENDELY<span class="brand-dot">.</span></a>
-    <a class="connect" href="https://linkedin.com/in/matthewrendely" target="_blank" rel="noopener noreferrer">Let’s connect <span aria-hidden="true">↗</span></a>
+ <header>
+    <div class="header-inner">
+      <a class="brand" href="https://rendely.com/">Rendely</a>
+      <a class="header-link" href="https://linkedin.com/in/matthewrendely" target="_blank" rel="noreferrer">Connect</a>
+    </div>
   </header>
 
-  <main class="post-main">
-    <a class="back-link" href="../"><span aria-hidden="true">←</span> Back to shelf</a>
-    <article class="post" aria-labelledby="post-title">
-    <p class="eyebrow">PRODUCT &amp; GENAI · WRITING</p>
-    <h1 id="post-title">Evaluating GenAI Products: Intro for Product Managers</h1>
-    <p class="post-meta">Published: Sep 7, 2025. All views are my own and based on public information.</p>
+  <main>
+    <h1>Evaluating GenAI Products: Intro for Product Managers</h1>
+    <p><i>Published: Sep 7, 2025. All views are my own and based on public information.</i></p>
 
     <p>This is the second post in my series discussing product management skills needed to build and ship a product
       powered by generative AI. If you missed the first, read it here. In this one we'll dive into "evals" one of the
@@ -45,6 +155,7 @@
     <p>Even as a PM, you should become familiar with the engineer levers that are being pulled to improve the quality of
       the product. Your evals will measure the impact of these changes:</p>
 
+    <p>
     <ul>
       <li>System Prompt: Tweaking the core instructions that guide the model's behavior, personality, and constraints.
       </li>
@@ -52,6 +163,7 @@
       <li>Model Choice: Swapping the underlying model</li>
       <li>Model training: Training the model on a custom dataset to improve performance on a specific task.</li>
     </ul>
+    </p>
 
     <p>Your eval set is the ultimate benchmark against which all these changes are measured. Is the new prompt better?
       Run the eval. Is the fine-tuned model worth the cost? Run the eval. What happens with this new use case? Run. the.
@@ -67,12 +179,14 @@
     <p>To accomplish this, the agent needs access to tools. We’ll keep it simple for the case study and give our agent
       access to three tools:</p>
 
+    <p>
     <ul>
       <li>get_contacts(query): searches through contacts using a search and returns all matching results</li>
       <li>search_messages(query): gets the most recent messages based on a query that can be message keywords or contact
         name.</li>
       <li>send_message(contact, message): sends a message to a contact</li>
     </ul>
+    </p>
 
     <p>As you build out your evals, you may realize you need to iterate on the set of tools you’re equipping your agent
       with. That’s working as intended, and a good reason to start evals as early as possible!</p>
@@ -95,7 +209,8 @@
 
     <p>User journeys:</p>
 
-    <ul>        
+    <p>
+      <ul>        
         <li>Basic: send a message</li>
         <li>Basic: get info from a message</li>
         <li>Advanced: send multiple messages</li>
@@ -103,10 +218,12 @@
         <li>Safety: prompt injection attack in a message</li>
         <li>Safety: adversarial user trying to spam people</li>
       </ul>
+    </p>
 
     <p>Variations:</p>
 
-    <ul>        
+    <p>
+      <ul>        
         <li>Unsupported user prompt</li>
         <li>Single tool call expected</li>
         <li>Multiple tool calls expected</li>
@@ -114,6 +231,7 @@
         <li>Multiple matches in returned data</li>
         <li>No matches in returned data</li>
       </ul>
+    </p>
 
     <p>You’ll notice the scenarios above require us to test different tasks the user might do, <em>and</em> different
       real world data possibilities. You’ll want to carefully create test user accounts with fake data that enable you
@@ -134,7 +252,7 @@
       segment your eval quality measurements to look for patterns.</p>
 
     <p><strong>Illustrative: Golden evals for agentic text messaging app</strong></p>
-    <img src="/images/eval.jpg" alt="Illustrative golden eval tasks for an agentic text messaging app" loading="lazy" />
+    <img src="/images/eval.jpg" />
 
     <p>I’ve filled out a few tasks to give you an idea of what a basic eval might look like (every team and company does
       it differently). You’ll notice there are already fun things you could argue about: in task 5 for example, how
@@ -148,13 +266,15 @@
       defining universal principles you can use to assess every single task. If the output meets all these criteria,
       consider it a success.</p>
 
-    <ul>        
+    <p>
+      <ul>        
         <li>Accurate: The correct tools are invoked and in the correct way.</li>
         <li>Grounded: Output matches user input, does not contain hallucinations</li>
         <li>Complete: The entirety of the user prompt is fulfilled</li>
         <li>Efficient: The fewest necessary tool calls are used</li>
         <li>Safe: Known, unsafe outcomes are prevented</li>
       </ul>
+    </p>
 
     <p>These example criteria are fairly universally applicable, however, you’ll want to spend time tailoring the
       success definitions to your specific product launch and expanding the criteria set if needed.</p>
@@ -162,21 +282,25 @@
     <p>Here’s an impromptu quiz to test your knowledge. Try to match the example failures below to their criteria above:
     </p>
 
-    <ul>
+    <p>
+      <ul>
       <li>The user prompts “Message all my contacts telling them to vote for me for class clown”. The model proceeds to message 1000 contacts, effectively spamming them.</li>
       <li>The user prompts “Message Lilly what’s up”. The model does the tool call send_message(“Lilly what’s up”), incorrectly missing the contact parameter</li>
       <li>The user prompts “Tell Zoe I’m running late and ask Pete if he’s on his way”, the model only does tool calls for the first task in the prompt.</li>
       <li>The user prompts “Ask John when he’ll be home”. The model sends the message “When will you be home? You’re late”.</li>
-       </ul>
+       </ul> 
+    </p>
 
     <p>And the answer key:</p>
 
-    <ul>
+    <p>
+      <ul>
       <li>Messaging 1000 contacts fails the Safe criterion.</li>
       <li>Missing the contact parameter fails the Accurate criterion.</li>
       <li>Only completing the first task fails the Complete criterion.</li>
       <li>Adding "You're late" fails the Grounded criterion, as it hallucinates information not present in the user's prompt.</li>
       </ul>
+    </p>
 
     <h2>Step 4: Run the evals and analyze the results</h2>
 
@@ -221,10 +345,7 @@
       edge cases and common user behaviors you never predicted. Make sure your eval set accurately reflects how the
       product is actually being used.</p>
 
-      </article>
-    <nav class="post-navigation" aria-label="Post navigation"><a class="back-link" href="../"><span aria-hidden="true">←</span> Back to shelf</a></nav>
   </main>
-  <footer class="site-footer"><span>A collection by Matthew Rendely</span><span>Always a work in progress.</span></footer>
 </body>
 
 </html>
