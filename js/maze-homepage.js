@@ -963,7 +963,8 @@ export function initMazeHomepage() {
     const betaDeadzone = 5.5; // degrees
     const betaDiff = currentBeta - neutralBeta;
     if (Math.abs(betaDiff) > betaDeadzone) {
-      const sign = Math.sign(betaDiff);
+      // Invert sign for iPhone: tilting forward decreases beta relative to upright hold
+      const sign = -Math.sign(betaDiff);
       const intensity = Math.min((Math.abs(betaDiff) - betaDeadzone) / 24.0, 2.0);
       const moveRate = 4.2 * intensity; // m/s
       const stepDist = sign * moveRate * dt;
