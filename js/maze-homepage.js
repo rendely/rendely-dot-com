@@ -445,6 +445,7 @@ export function initMazeHomepage() {
   scene.fog = new THREE.FogExp2('#141816', 0.038);
 
   const camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.1, 80);
+  camera.rotation.order = 'YXZ';
 
   // Lighting
   const ambientLight = new THREE.AmbientLight('#ffffff', 0.85);
@@ -665,18 +666,16 @@ export function initMazeHomepage() {
     const cx = (camera.position.x / CELL_SIZE + (GRID_COLS - 1) / 2) * cellPx;
     const cz = (camera.position.z / CELL_SIZE + (GRID_ROWS - 1) / 2) * cellPx;
 
-    // Vision cone
-    const dirX = Math.sin(camera.rotation.y + Math.PI);
-    const dirZ = Math.cos(camera.rotation.y + Math.PI);
+    // Vision cone based on cameraYaw
     const coneAngle = 0.5; // rad
     const coneLen = 14;
 
     mmCtx.beginPath();
     mmCtx.moveTo(cx, cz);
-    mmCtx.lineTo(cx + Math.sin(camera.rotation.y + Math.PI - coneAngle) * coneLen,
-                 cz + Math.cos(camera.rotation.y + Math.PI - coneAngle) * coneLen);
-    mmCtx.lineTo(cx + Math.sin(camera.rotation.y + Math.PI + coneAngle) * coneLen,
-                 cz + Math.cos(camera.rotation.y + Math.PI + coneAngle) * coneLen);
+    mmCtx.lineTo(cx + Math.sin(cameraYaw + Math.PI - coneAngle) * coneLen,
+                 cz + Math.cos(cameraYaw + Math.PI - coneAngle) * coneLen);
+    mmCtx.lineTo(cx + Math.sin(cameraYaw + Math.PI + coneAngle) * coneLen,
+                 cz + Math.cos(cameraYaw + Math.PI + coneAngle) * coneLen);
     mmCtx.closePath();
     mmCtx.fillStyle = 'rgba(52, 211, 153, 0.25)';
     mmCtx.fill();
@@ -704,6 +703,10 @@ export function initMazeHomepage() {
   let currentDirIdx = 0; // East
   let targetGrid = { gx: 1, gz: 1 };
 
+  // Explicit Euler angles for orientation (order: YXZ)
+  let cameraYaw = DIRS[currentDirIdx].yaw;
+  let cameraPitch = 0;
+
   // Tour state
   let isAutoPilot = true;
   let tourSpeed = 1.0;
@@ -717,10 +720,10 @@ export function initMazeHomepage() {
   let curatorPauseTimer = 0;
   const visitHistory = Array(GRID_ROWS).fill(0).map(() => Array(GRID_COLS).fill(0));
 
-  // Initialize camera position
+  // Initialize camera position and orientation
   const initialWorld = gridToWorld(currentGrid.gx, currentGrid.gz);
   camera.position.set(initialWorld.x, CAMERA_HEIGHT, initialWorld.z);
-  camera.rotation.set(0, DIRS[currentDirIdx].yaw, 0);
+  camera.rotation.set(cameraPitch, cameraYaw, 0);
 
   // Smart autonomous decision algorithm
   function decideNextStep() {
@@ -780,7 +783,7 @@ export function initMazeHomepage() {
       // Turn
       transitionType = 'turn';
       transitionProgress = 0;
-      turnStartYaw = camera.rotation.y;
+      turnStartYaw = cameraYaw;
 
       let targetYaw = DIRS[nextStep.dirIdx].yaw;
       // Find shortest turn angle
@@ -801,11 +804,9 @@ export function initMazeHomepage() {
 
   // --- MANUAL EXPLORATION CONTROLS (WASD / ARROW KEYS / DRAG) ---
   const keys = {};
-  const moveVelocity = new THREE.Vector3();
   const playerRadius = 0.65;
   let isDragging = false;
   let prevMousePos = { x: 0, y: 0 };
-  let eulerCamera = new THREE.Euler(0, 0, 0, 'YXZ');
 
   window.addEventListener('keydown', (e) => {
     keys[e.code] = true;
@@ -839,10 +840,9 @@ export function initMazeHomepage() {
       const dy = e.clientY - prevMousePos.y;
       prevMousePos = { x: e.clientX, y: e.clientY };
 
-      eulerCamera.setFromQuaternion(camera.quaternion);
-      eulerCamera.y -= dx * 0.0035;
-      eulerCamera.x = Math.max(-Math.PI / 4, Math.min(Math.PI / 4, eulerCamera.x - dy * 0.0035));
-      camera.quaternion.setFromEuler(eulerCamera);
+      cameraYaw -= dx * 0.0035;
+      cameraPitch = Math.max(-Math.PI / 4, Math.min(Math.PI / 4, cameraPitch - dy * 0.0035));
+      camera.rotation.set(cameraPitch, cameraYaw, 0);
     }
   });
 
@@ -862,10 +862,9 @@ export function initMazeHomepage() {
 
       if (Math.hypot(dx, dy) > 2) {
         if (isAutoPilot) setAutoPilot(false);
-        eulerCamera.setFromQuaternion(camera.quaternion);
-        eulerCamera.y -= dx * 0.005;
-        eulerCamera.x = Math.max(-Math.PI / 4, Math.min(Math.PI / 4, eulerCamera.x - dy * 0.005));
-        camera.quaternion.setFromEuler(eulerCamera);
+        cameraYaw -= dx * 0.005;
+        cameraPitch = Math.max(-Math.PI / 4, Math.min(Math.PI / 4, cameraPitch - dy * 0.005));
+        camera.rotation.set(cameraPitch, cameraYaw, 0);
       }
     }
   }, { passive: true });
@@ -885,24 +884,146 @@ export function initMazeHomepage() {
   }
 
   function updateManualMovement(dt) {
-    const speed = 4.2;
-    const moveDir = new THREE.Vector3();
+    const moveSpeed = 4.2;
+    const turnSpeed = 2.4;
 
-    if (keys['KeyW'] || keys['ArrowUp']) moveDir.z -= 1;
-    if (keys['KeyS'] || keys['ArrowDown']) moveDir.z += 1;
-    if (keys['KeyA'] || keys['ArrowLeft']) moveDir.x -= 1;
-    if (keys['KeyD'] || keys['ArrowRight']) moveDir.x += 1;
+    // Arrow Left / Right rotates the view relative to current facing
+    if (keys['ArrowLeft'] && !keys['ShiftLeft'] && !keys['ShiftRight']) {
+      cameraYaw += turnSpeed * dt;
+    }
+    if (keys['ArrowRight'] && !keys['ShiftLeft'] && !keys['ShiftRight']) {
+      cameraYaw -= turnSpeed * dt;
+    }
 
-    if (moveDir.lengthSq() > 0) {
-      moveDir.normalize();
-      moveDir.applyEuler(new THREE.Euler(0, camera.rotation.y, 0));
+    // Direction vectors in the horizontal plane strictly relative to where person is facing
+    const forwardX = -Math.sin(cameraYaw);
+    const forwardZ = -Math.cos(cameraYaw);
+    const rightX = Math.cos(cameraYaw);
+    const rightZ = -Math.sin(cameraYaw);
 
-      const stepX = new THREE.Vector3(camera.position.x + moveDir.x * speed * dt, camera.position.y, camera.position.z);
+    let moveFwd = 0;
+    let moveSide = 0;
+
+    // Up / Down and W / S move forward / backward relative to where person is facing
+    if (keys['KeyW'] || keys['ArrowUp']) moveFwd += 1;
+    if (keys['KeyS'] || keys['ArrowDown']) moveFwd -= 1;
+
+    // A / D and Shift + Arrow strafe left / right relative to where person is facing
+    if (keys['KeyA'] || ((keys['ShiftLeft'] || keys['ShiftRight']) && keys['ArrowLeft'])) moveSide -= 1;
+    if (keys['KeyD'] || ((keys['ShiftLeft'] || keys['ShiftRight']) && keys['ArrowRight'])) moveSide += 1;
+
+    if (moveFwd !== 0 || moveSide !== 0) {
+      const len = Math.hypot(moveFwd, moveSide);
+      const stepDist = moveSpeed * dt;
+      const stepXVal = (forwardX * (moveFwd / len) + rightX * (moveSide / len)) * stepDist;
+      const stepZVal = (forwardZ * (moveFwd / len) + rightZ * (moveSide / len)) * stepDist;
+
+      const stepX = new THREE.Vector3(camera.position.x + stepXVal, camera.position.y, camera.position.z);
       if (!checkWallCollision(stepX)) camera.position.x = stepX.x;
 
-      const stepZ = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z + moveDir.z * speed * dt);
+      const stepZ = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z + stepZVal);
       if (!checkWallCollision(stepZ)) camera.position.z = stepZ.z;
     }
+
+    camera.rotation.set(cameraPitch, cameraYaw, 0);
+  }
+
+  // --- MOBILE GYROSCOPE STEERING ---
+  let isGyroActive = false;
+  let neutralBeta = null;
+  let currentBeta = null;
+  let currentGamma = null;
+
+  function handleOrientation(e) {
+    if (e.beta === null || e.gamma === null) return;
+    currentBeta = e.beta;
+    currentGamma = e.gamma;
+    if (neutralBeta === null) {
+      neutralBeta = e.beta;
+    }
+  }
+
+  function updateGyroMovement(dt) {
+    if (!isGyroActive || currentBeta === null || currentGamma === null) return;
+    if (neutralBeta === null) neutralBeta = currentBeta;
+
+    // 1. Left and right tilt (gamma) rotate the view left and right
+    const gammaDeadzone = 4.5; // degrees
+    if (Math.abs(currentGamma) > gammaDeadzone) {
+      const sign = Math.sign(currentGamma);
+      const intensity = Math.min((Math.abs(currentGamma) - gammaDeadzone) / 28.0, 2.0);
+      const turnRate = 2.4 * intensity; // rad/sec
+      // Tilting left (negative gamma) rotates view left (+yaw)
+      // Tilting right (positive gamma) rotates view right (-yaw)
+      cameraYaw -= sign * turnRate * dt;
+      if (isAutoPilot) setAutoPilot(false);
+    }
+
+    // 2. Forward and backward tilt (beta) move forward or backward
+    const betaDeadzone = 5.5; // degrees
+    const betaDiff = currentBeta - neutralBeta;
+    if (Math.abs(betaDiff) > betaDeadzone) {
+      const sign = Math.sign(betaDiff);
+      const intensity = Math.min((Math.abs(betaDiff) - betaDeadzone) / 24.0, 2.0);
+      const moveRate = 4.2 * intensity; // m/s
+      const stepDist = sign * moveRate * dt;
+
+      const forwardX = -Math.sin(cameraYaw);
+      const forwardZ = -Math.cos(cameraYaw);
+
+      const stepX = new THREE.Vector3(camera.position.x + forwardX * stepDist, camera.position.y, camera.position.z);
+      if (!checkWallCollision(stepX)) camera.position.x = stepX.x;
+
+      const stepZ = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z + forwardZ * stepDist);
+      if (!checkWallCollision(stepZ)) camera.position.z = stepZ.z;
+
+      if (isAutoPilot) setAutoPilot(false);
+    }
+
+    camera.rotation.set(cameraPitch, cameraYaw, 0);
+  }
+
+  const gyroBtn = document.getElementById('btn-gyro');
+
+  async function toggleGyro() {
+    if (isGyroActive) {
+      isGyroActive = false;
+      neutralBeta = null;
+      if (gyroBtn) {
+        gyroBtn.classList.remove('active-gyro');
+        gyroBtn.querySelector('.btn-text').textContent = 'Gyro: OFF';
+      }
+      statusElement.textContent = isAutoPilot ? 'AUTOPILOT TOUR ACTIVE' : 'MANUAL EXPLORATION (ARROWS / WASD)';
+      return;
+    }
+
+    // iOS 13+ permission request
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+      try {
+        const perm = await DeviceOrientationEvent.requestPermission();
+        if (perm !== 'granted') {
+          alert('Motion access was not granted. Please allow orientation sensors to use tilt steering.');
+          return;
+        }
+      } catch (err) {
+        console.warn('Gyro requestPermission error:', err);
+        return;
+      }
+    }
+
+    window.addEventListener('deviceorientation', handleOrientation, true);
+    isGyroActive = true;
+    neutralBeta = null;
+    if (gyroBtn) {
+      gyroBtn.classList.add('active-gyro');
+      gyroBtn.querySelector('.btn-text').textContent = 'Gyro: ON';
+    }
+    if (isAutoPilot) setAutoPilot(false);
+    statusElement.textContent = 'GYRO ACTIVE • TILT TO STEER & WALK';
+  }
+
+  if (gyroBtn) {
+    gyroBtn.addEventListener('click', toggleGyro);
   }
 
   // --- RAYCASTING & INTERACTIVE POSTER CLICKS ---
@@ -1010,6 +1131,8 @@ export function initMazeHomepage() {
     transitionType = 'idle';
 
     if (isAutoPilot) {
+      neutralBeta = null;
+
       // Snap to nearest grid center
       const nearest = worldToGrid(camera.position.x, camera.position.z);
       // Ensure nearest is a corridor cell
@@ -1020,12 +1143,12 @@ export function initMazeHomepage() {
       camera.position.set(nw.x, CAMERA_HEIGHT, nw.z);
 
       // Snap yaw to nearest cardinal direction
-      let currentYaw = camera.rotation.y % (Math.PI * 2);
-      if (currentYaw < 0) currentYaw += Math.PI * 2;
+      let curYaw = cameraYaw % (Math.PI * 2);
+      if (curYaw < 0) curYaw += Math.PI * 2;
       let closestDir = 0;
       let minDiff = 999;
       DIRS.forEach((d, idx) => {
-        let diff = Math.abs(d.yaw - currentYaw);
+        let diff = Math.abs(d.yaw - curYaw);
         if (diff > Math.PI) diff = Math.PI * 2 - diff;
         if (diff < minDiff) {
           minDiff = diff;
@@ -1033,11 +1156,13 @@ export function initMazeHomepage() {
         }
       });
       currentDirIdx = closestDir;
-      camera.rotation.set(0, DIRS[currentDirIdx].yaw, 0);
+      cameraYaw = DIRS[currentDirIdx].yaw;
+      cameraPitch = 0;
+      camera.rotation.set(0, cameraYaw, 0);
 
       statusElement.textContent = 'AUTOPILOT TOUR ACTIVE';
     } else {
-      statusElement.textContent = 'MANUAL EXPLORATION (WASD / ARROWS)';
+      statusElement.textContent = isGyroActive ? 'GYRO ACTIVE • TILT TO STEER & WALK' : 'MANUAL EXPLORATION (ARROWS / WASD)';
     }
     updateControlButtons();
   }
@@ -1125,22 +1250,27 @@ export function initMazeHomepage() {
           transitionProgress += dt / turnDuration;
 
           if (transitionProgress >= 1.0) {
-            camera.rotation.y = turnTargetYaw;
-            camera.rotation.z = 0;
+            cameraYaw = turnTargetYaw;
+            camera.rotation.set(0, cameraYaw, 0);
             isTransitioning = false;
             startNextAutonomousAction();
           } else {
             const ease = easeInOutCubic(transitionProgress);
-            camera.rotation.y = THREE.MathUtils.lerp(turnStartYaw, turnTargetYaw, ease);
+            cameraYaw = THREE.MathUtils.lerp(turnStartYaw, turnTargetYaw, ease);
             // Subtle retro bank tilt during turn (1.2 deg)
             const turnSign = Math.sign(turnTargetYaw - turnStartYaw);
-            camera.rotation.z = Math.sin(transitionProgress * Math.PI) * 0.02 * turnSign;
+            camera.rotation.set(0, cameraYaw, Math.sin(transitionProgress * Math.PI) * 0.02 * turnSign);
           }
         }
       }
     } else {
       // Manual walking mode
       updateManualMovement(dt);
+    }
+
+    // Apply Gyroscope tilt steering if enabled
+    if (isGyroActive) {
+      updateGyroMovement(dt);
     }
 
     // Render 2D Top-Down Mini-Map

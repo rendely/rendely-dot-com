@@ -229,6 +229,16 @@ button:focus-visible, a:focus-visible {
   background: var(--accent-glow);
 }
 
+.control-btn.active-gyro {
+  background: rgba(52, 211, 153, 0.25);
+  border-color: #34d399;
+  color: #34d399;
+}
+
+.control-btn.active-gyro:hover {
+  background: rgba(52, 211, 153, 0.38);
+}
+
 .control-separator {
   width: 1px;
   height: 18px;
