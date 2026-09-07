@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#141816">
+  <meta name="description" content="Matthew Rendely — Product & GenAI. Windows 3D Maze Screensaver in an office environment.">
+  <title>Matthew Rendely — 3D Office Maze</title>
+  <link rel="icon" type="image/x-icon" sizes="16x16 32x32 64x64" href="/images/favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+  <link rel="stylesheet" href="css/maze.css">
+  <script type="module" src="js/maze-homepage.js"></script>
+</head>
+<body>
+  <!-- Top Floating Header -->
+  <header class="site-header">
+    <div style="display: flex; align-items: center;">
+      <a class="brand" href="./">RENDELY<span class="brand-dot">.</span></a>
+      <span class="badge-pill">
+        <span class="badge-pulse"></span>
+        3D Office Maze
+      </span>
+    </div>
+    <div class="header-actions">
+      <a class="nav-btn" href="./" title="Switch to bookshelf view">Bookshelf View ↗</a>
+      <a class="nav-btn primary" href="https://linkedin.com/in/matthewrendely" target="_blank" rel="noopener noreferrer">Let’s connect <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <!-- 3D WebGL Canvas -->
+  <div id="maze-container">
+    <canvas id="maze-canvas"></canvas>
+  </div>
+
+  <!-- Center Crosshair for Manual Exploration -->
+  <div id="crosshair"></div>
+
+  <!-- Floating Hover Tooltip for Wall Posters -->
+  <div id="poster-tooltip">
+    <div class="tooltip-kicker"></div>
+    <div class="tooltip-title"></div>
+    <div class="tooltip-action">Click poster to inspect ↗</div>
+  </div>
+
+  <!-- Top-Right Retro 2D Mini-Map (Windows 95 Screensaver homage) -->
+  <aside class="minimap-wrapper" aria-label="Maze mini-map">
+    <div class="minimap-card">
+      <div class="minimap-header">
+        <span><span class="radar-sweep"></span> Mini-Map</span>
+        <span>13x13</span>
+      </div>
+      <canvas id="minimap-canvas" width="148" height="148"></canvas>
+      <div class="minimap-legend">
+        <span>● Camera</span>
+        <span>● Posters (6)</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Floating HUD Tour Controls -->
+  <div class="hud-controls-container">
+    <div class="hud-controls">
+      <button type="button" class="control-btn tour-indicator" id="btn-autopilot" aria-label="Toggle Auto-Pilot Screensaver">
+        <span class="btn-text">Auto-Pilot: ON</span>
+      </button>
+      <div class="control-separator"></div>
+      <button type="button" class="control-btn" id="btn-gyro" aria-label="Toggle Gyroscope Steering (Mobile)">
+        <span class="btn-text">Gyro: OFF</span>
+      </button>
+      <div class="control-separator"></div>
+      <button type="button" class="control-btn" id="btn-speed" aria-label="Toggle Tour Speed">
+        <span class="btn-text">Speed: 1.0x</span>
+      </button>
+      <div class="control-separator"></div>
+      <button type="button" class="control-btn active" id="btn-minimap" aria-label="Toggle Mini-Map">
+        <span>Map</span>
+      </button>
+    </div>
+    <div class="hud-instruction">Click posters to open • Arrows / WASD to steer • Tilt on mobile</div>
+  </div>
+
+  <!-- Bottom Retro Status Bar -->
+  <footer class="status-bar">
+    <div class="status-left">
+      <span class="status-tag">SYS: WIN_3D_MAZE_V1.0</span>
+      <span>|</span>
+      <span id="status-corridor" class="status-highlight">AUTOPILOT TOUR ACTIVE</span>
+    </div>
+    <div class="status-right">
+      <span>OFFICE CORRIDOR TOUR • MATTHEW RENDELY</span>
+    </div>
+  </footer>
+
+  <!-- Project Detail Modal Dialog -->
+  <dialog id="project-dialog" aria-labelledby="card-title" aria-describedby="card-desc">
+    <div class="dialog-backdrop-wrap">
+      <article class="project-card">
+        <header class="card-header">
+          <div class="card-kicker-wrap">
+            <span class="card-kicker" id="card-kicker"></span>
+            <span class="card-index" id="card-index"></span>
+          </div>
+          <button type="button" class="card-close-btn" id="card-close-btn" aria-label="Close project dialog">
+            Close <span aria-hidden="true">✕</span>
+          </button>
+        </header>
+        <div class="card-body">
+          <div class="card-poster-thumb">
+            <img id="card-img" src="" alt="">
+          </div>
+          <div class="card-content">
+            <div>
+              <h2 class="card-title" id="card-title"></h2>
+              <p class="card-desc" id="card-desc"></p>
+            </div>
+            <div class="card-actions">
+              <a id="card-visit-link" class="card-visit-link" target="_blank" rel="noopener noreferrer">
+                Open in new tab <span aria-hidden="true">↗</span>
+              </a>
+              <button type="button" class="card-resume-btn" id="card-resume-btn">
+                Resume Tour
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </dialog>
+
+  <!-- Accessible Fallback for No-Script / Search Crawlers -->
+  <noscript>
+    <div class="no-script" style="padding: 40px; color: #fff; max-width: 600px; margin: auto;">
+      <h1>Matthew Rendely — Work & Writing</h1>
+      <p>Explore selected work:</p>
+      <ul>
+        <li><a href="https://blog.google/innovation-and-ai/products/gemini-app/gemini-spark-updates-july-2026/" style="color:#34d399;">Gemini Spark in Chrome</a></li>
+        <li><a href="https://www.youtube.com/watch?v=khX5-VHoYds" style="color:#34d399;">Gemini in Chrome Agentic Capabilities</a></li>
+        <li><a href="posts/0-genai-pm-intro.html" style="color:#34d399;">How to Build Generative AI Products</a></li>
+        <li><a href="posts/1-evals-pm-intro.html" style="color:#34d399;">Evaluating GenAI Products</a></li>
+        <li><a href="https://open.spotify.com/show/2fPaYIMGV3P20sBKonSSzv" style="color:#34d399;">Certainly Uncertain</a></li>
+        <li><a href="https://linkedin.com/in/matthewrendely" style="color:#34d399;">LinkedIn</a></li>
+      </ul>
+      <p><a href="./" style="color:#34d399;">Switch to standard bookshelf view</a></p>
+    </div>
+  </noscript>
+</body>
+</html>
