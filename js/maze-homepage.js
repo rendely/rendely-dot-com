@@ -848,9 +848,14 @@ export function initMazeHomepage() {
 
   // Touch drag for mobile
   let touchStartPos = { x: 0, y: 0 };
+  let touchMoved = false;
+  let touchDistance = 0;
+
   canvas.addEventListener('touchstart', (e) => {
     if (e.touches.length === 1) {
       touchStartPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      touchDistance = 0;
+      touchMoved = false;
     }
   }, { passive: true });
 
@@ -858,14 +863,24 @@ export function initMazeHomepage() {
     if (e.touches.length === 1) {
       const dx = e.touches[0].clientX - touchStartPos.x;
       const dy = e.touches[0].clientY - touchStartPos.y;
+      touchDistance += Math.hypot(dx, dy);
       touchStartPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
 
-      if (Math.hypot(dx, dy) > 2) {
+      if (touchDistance > 8) {
+        touchMoved = true;
         if (isAutoPilot) setAutoPilot(false);
         cameraYaw -= dx * 0.005;
         cameraPitch = Math.max(-Math.PI / 4, Math.min(Math.PI / 4, cameraPitch - dy * 0.005));
         camera.rotation.set(cameraPitch, cameraYaw, 0);
       }
+    }
+  }, { passive: true });
+
+  canvas.addEventListener('touchend', () => {
+    if (touchMoved) {
+      setTimeout(() => {
+        touchMoved = false;
+      }, 300);
     }
   }, { passive: true });
 
@@ -1087,32 +1102,77 @@ export function initMazeHomepage() {
     document.getElementById('card-img').alt = book.title;
     document.getElementById('card-visit-link').href = book.url;
 
+    if (hoveredPoster) {
+      hoveredPoster.userData.posterMat.emissiveIntensity = 0;
+      hoveredPoster = null;
+    }
+    if (tooltip) {
+      tooltip.classList.remove('visible');
+    }
+    canvas.style.cursor = 'default';
+
     dialog.showModal();
   }
 
-  function closeProjectModal() {
-    dialog.close();
+  let lastDialogCloseTime = 0;
+
+  function closeProjectModal(e) {
+    if (e) {
+      if (typeof e.stopPropagation === 'function') e.stopPropagation();
+      if (typeof e.preventDefault === 'function') e.preventDefault();
+    }
+    lastDialogCloseTime = performance.now();
+    if (dialog.open) {
+      dialog.close();
+    }
     // Resume screensaver smoothly
     setAutoPilot(true);
   }
 
   document.getElementById('card-close-btn').addEventListener('click', closeProjectModal);
   document.getElementById('card-resume-btn').addEventListener('click', closeProjectModal);
+
+  // Dismiss when clicking outside the project-card (i.e. on backdrop wrapper)
   dialog.addEventListener('click', (e) => {
-    if (e.target === dialog) closeProjectModal();
+    if (!e.target.closest('.project-card')) {
+      closeProjectModal(e);
+    }
   });
+
+  dialog.addEventListener('cancel', (e) => {
+    e.preventDefault();
+    closeProjectModal(e);
+  });
+
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && dialog.open) closeProjectModal();
+    if (e.key === 'Escape' && dialog.open) closeProjectModal(e);
   });
 
   // Click handler for posters
   window.addEventListener('click', (e) => {
-    // Avoid triggering if clicking on UI buttons
-    if (e.target.closest('.site-header') || e.target.closest('.hud-controls-container') || e.target.closest('.minimap-card') || dialog.open) {
+    // Avoid triggering if clicking on UI buttons, dialog, or if dialog was recently closed
+    if (
+      dialog.open ||
+      performance.now() - lastDialogCloseTime < 400 ||
+      e.target.closest('#project-dialog') ||
+      e.target.closest('.site-header') ||
+      e.target.closest('.hud-controls-container') ||
+      e.target.closest('.minimap-wrapper')
+    ) {
       return;
     }
 
-    raycaster.setFromCamera(mouse, camera);
+    if (touchMoved) {
+      touchMoved = false;
+      return;
+    }
+
+    const clickCoord = new THREE.Vector2(
+      (e.clientX / window.innerWidth) * 2 - 1,
+      -(e.clientY / window.innerHeight) * 2 + 1
+    );
+
+    raycaster.setFromCamera(clickCoord, camera);
     const intersects = raycaster.intersectObjects(interactivePosters, false);
     if (intersects.length > 0 && intersects[0].distance < 8.5) {
       const hit = intersects[0].object;
@@ -1202,6 +1262,11 @@ export function initMazeHomepage() {
     requestAnimationFrame(animate);
 
     const dt = Math.min(clock.getDelta(), 0.1);
+
+    if (dialog.open) {
+      renderer.render(scene, camera);
+      return;
+    }
 
     // Check hover state for raycaster
     checkPosterHover();
