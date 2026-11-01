@@ -719,6 +719,8 @@ export function initMazeHomepage() {
   let turnStartYaw = 0;
   let turnTargetYaw = 0;
   let curatorPauseTimer = 0;
+  let pendingStep = null;
+  let tourHeadingBeforePoster = 0;
   const visitHistory = Array(GRID_ROWS).fill(0).map(() => Array(GRID_COLS).fill(0));
 
   // Initialize camera position and orientation
@@ -759,17 +761,28 @@ export function initMazeHomepage() {
       return { dirIdx: oppositeDir, gx: currentGrid.gx, gz: currentGrid.gz };
     }
 
-    // Weighted selection
-    candidates.sort((a, b) => b.weight - a.weight);
-    // 75% choose best, 25% allow exploration
-    const choice = Math.random() < 0.75 ? candidates[0] : candidates[Math.floor(Math.random() * candidates.length)];
-    return choice;
+    // Only reverse at a dead end; keep the choice stable throughout a turn.
+    const forwardChoices = candidates.filter(candidate => candidate.dirIdx !== oppositeDir);
+    const choices = forwardChoices.length ? forwardChoices : candidates;
+    choices.sort((a, b) => b.weight - a.weight);
+    return choices[0];
+  }
+
+  function beginTourTurn(yaw, type) {
+    transitionType = type;
+    transitionProgress = 0;
+    turnStartYaw = cameraYaw;
+    let diff = yaw - turnStartYaw;
+    while (diff < -Math.PI) diff += Math.PI * 2;
+    while (diff > Math.PI) diff -= Math.PI * 2;
+    turnTargetYaw = turnStartYaw + diff;
+    isTransitioning = true;
   }
 
   function startNextAutonomousAction() {
     if (!isAutoPilot || curatorPauseTimer > 0) return;
 
-    const nextStep = decideNextStep();
+    const nextStep = pendingStep || decideNextStep();
 
     if (nextStep.dirIdx === currentDirIdx) {
       // Move forward
@@ -780,21 +793,11 @@ export function initMazeHomepage() {
       const tw = gridToWorld(targetGrid.gx, targetGrid.gz);
       moveTargetPos.set(tw.x, CAMERA_HEIGHT, tw.z);
       isTransitioning = true;
+      pendingStep = null;
     } else {
-      // Turn
-      transitionType = 'turn';
-      transitionProgress = 0;
-      turnStartYaw = cameraYaw;
-
-      let targetYaw = DIRS[nextStep.dirIdx].yaw;
-      // Find shortest turn angle
-      let diff = targetYaw - turnStartYaw;
-      while (diff < -Math.PI) diff += Math.PI * 2;
-      while (diff > Math.PI) diff -= Math.PI * 2;
-      turnTargetYaw = turnStartYaw + diff;
-
+      pendingStep = nextStep;
+      beginTourTurn(DIRS[nextStep.dirIdx].yaw, 'turn');
       currentDirIdx = nextStep.dirIdx;
-      isTransitioning = true;
     }
   }
 
@@ -1191,6 +1194,8 @@ export function initMazeHomepage() {
     isAutoPilot = enabled;
     isTransitioning = false;
     transitionType = 'idle';
+    pendingStep = null;
+    curatorPauseTimer = 0;
 
     if (isAutoPilot) {
       neutralBeta = null;
@@ -1278,7 +1283,7 @@ export function initMazeHomepage() {
         statusElement.textContent = `ADMIRING WORK (${curatorPauseTimer.toFixed(1)}s)`;
         if (curatorPauseTimer <= 0) {
           statusElement.textContent = 'AUTOPILOT TOUR ACTIVE';
-          startNextAutonomousAction();
+          beginTourTurn(tourHeadingBeforePoster, 'return');
         }
       } else if (!isTransitioning) {
         startNextAutonomousAction();
@@ -1294,15 +1299,19 @@ export function initMazeHomepage() {
             isTransitioning = false;
 
             // Check if current position is right next to a poster
+            const faceOffsets = { N: [0, -1], S: [0, 1], E: [1, 0], W: [-1, 0] };
             const facingPoster = POSTER_MOUNTS.find(pm => {
-              const dist = Math.hypot(pm.gx - currentGrid.gx, pm.gz - currentGrid.gz);
-              return dist <= 1.2;
+              const [dx, dz] = faceOffsets[pm.face];
+              return currentGrid.gx === pm.gx + dx && currentGrid.gz === pm.gz + dz;
             });
 
             if (facingPoster) {
               const book = books[facingPoster.bookIndex];
               statusElement.textContent = `PASSING: ${book.title.toUpperCase()}`;
-              curatorPauseTimer = 2.4 / tourSpeed; // linger for curator view
+              tourHeadingBeforePoster = DIRS[currentDirIdx].yaw;
+              const posterWorld = gridToWorld(facingPoster.gx, facingPoster.gz);
+              const lookYaw = Math.atan2(camera.position.x - posterWorld.x, camera.position.z - posterWorld.z);
+              beginTourTurn(lookYaw, 'look');
             } else {
               startNextAutonomousAction();
             }
@@ -1312,7 +1321,7 @@ export function initMazeHomepage() {
             // Subtle nostalgic screensaver camera sway
             camera.position.y = CAMERA_HEIGHT + Math.sin(transitionProgress * Math.PI) * 0.03;
           }
-        } else if (transitionType === 'turn') {
+        } else if (['turn', 'look', 'return'].includes(transitionType)) {
           const turnDuration = 0.65 / tourSpeed;
           transitionProgress += dt / turnDuration;
 
@@ -1320,7 +1329,11 @@ export function initMazeHomepage() {
             cameraYaw = turnTargetYaw;
             camera.rotation.set(0, cameraYaw, 0);
             isTransitioning = false;
-            startNextAutonomousAction();
+            if (transitionType === 'look') {
+              curatorPauseTimer = 3;
+            } else {
+              startNextAutonomousAction();
+            }
           } else {
             const ease = easeInOutCubic(transitionProgress);
             cameraYaw = THREE.MathUtils.lerp(turnStartYaw, turnTargetYaw, ease);
