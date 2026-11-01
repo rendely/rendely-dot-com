@@ -50,8 +50,9 @@ const POSTER_MOUNTS = [
   { gx: 7, gz: 4, face: 'S', bookIndex: 2 }, // How to Build GenAI Products
   { gx: 2, gz: 8, face: 'E', bookIndex: 3 }, // Evaluating GenAI Products
   { gx: 7, gz: 8, face: 'N', bookIndex: 4 }, // Mistborn trailer
-  { gx: 10, gz: 8, face: 'W', bookIndex: 5 }, // Certainly Uncertain
-  { gx: 10, gz: 4, face: 'W', bookIndex: 6 } // LinkedIn
+  { gx: 8, gz: 8, face: 'N', bookIndex: 5 }, // Laser Mower
+  { gx: 10, gz: 8, face: 'W', bookIndex: 6 }, // Certainly Uncertain
+  { gx: 10, gz: 4, face: 'W', bookIndex: 7 } // LinkedIn
 ];
 
 // Office Door Mounts on various wall cells for authentic workplace feel

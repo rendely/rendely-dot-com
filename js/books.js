@@ -45,6 +45,15 @@ export const books = [
     "ink": "#f0eee4"
   },
   {
+    "title": "Laser Mower",
+    "description": "A comedic short about an inventor building a laser lawn mower, made to explore voices and camera movement in AI video generation.",
+    "url": "https://www.dropbox.com/scl/fi/f15xb6eq8zj63mh98610e/Laser-mower.mp4?rlkey=2edeozqx2ctn3f4mr5ad7liyt&st=lu2ig7sc&dl=0",
+    "image": "images/laser-mower.svg",
+    "category": "Video",
+    "color": "#526342",
+    "ink": "#fff0cd"
+  },
+  {
     "title": "Certainly Uncertain",
     "description": "Philosophize with me.",
     "url": "https://open.spotify.com/show/2fPaYIMGV3P20sBKonSSzv",
