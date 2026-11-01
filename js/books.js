@@ -9,6 +9,15 @@ export const books = [
     "ink": "#fff0cd"
   },
   {
+    "title": "Mistborn: An AI Video Trailer",
+    "description": "A fan-made trailer inspired by Mistborn, created to explore AI video generation.",
+    "url": "https://www.dropbox.com/scl/fi/2z4gqn3e80s09i89wg2v7/Mistborn-trailer3.mp4?rlkey=ze9u1phab0jhghzpbsk0zikcm&st=0zk3b3cm&dl=0",
+    "image": "images/mistborn-thumbnail.jpg",
+    "category": "Video",
+    "color": "#303a3c",
+    "ink": "#f0eee4"
+  },
+  {
     "title": "Gemini in Chrome Agentic Capabilities",
     "description": "How we're weaving Gemini into Chrome to unlock richer, agentic workflows across the browser.",
     "url": "https://www.youtube.com/watch?v=khX5-VHoYds",

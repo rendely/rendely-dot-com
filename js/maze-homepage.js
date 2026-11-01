@@ -42,15 +42,16 @@ function worldToGrid(x, z) {
   };
 }
 
-// 6 Project Poster Mounts on specific wall faces
+// Project Poster Mounts on specific wall faces
 // gx, gz: wall cell coordinates. face: 'N', 'S', 'E', 'W' (facing toward corridor)
 const POSTER_MOUNTS = [
   { gx: 2, gz: 2, face: 'E', bookIndex: 0 }, // Gemini Spark in Chrome (Launch)
-  { gx: 5, gz: 6, face: 'N', bookIndex: 1 }, // Gemini in Chrome Agentic Capabilities (Talk)
-  { gx: 7, gz: 4, face: 'S', bookIndex: 2 }, // How to Build GenAI Products (Field notes)
-  { gx: 2, gz: 8, face: 'E', bookIndex: 3 }, // Evaluating GenAI Products (Field notes)
-  { gx: 7, gz: 8, face: 'N', bookIndex: 4 }, // Certainly Uncertain (Podcast)
-  { gx: 10, gz: 8, face: 'W', bookIndex: 5 } // LinkedIn (About me)
+  { gx: 5, gz: 6, face: 'N', bookIndex: 1 }, // Mistborn trailer
+  { gx: 7, gz: 4, face: 'S', bookIndex: 2 }, // Gemini in Chrome Agentic Capabilities
+  { gx: 2, gz: 8, face: 'E', bookIndex: 3 }, // How to Build GenAI Products
+  { gx: 7, gz: 8, face: 'N', bookIndex: 4 }, // Evaluating GenAI Products
+  { gx: 10, gz: 8, face: 'W', bookIndex: 5 }, // Certainly Uncertain
+  { gx: 10, gz: 4, face: 'W', bookIndex: 6 } // LinkedIn
 ];
 
 // Office Door Mounts on various wall cells for authentic workplace feel
