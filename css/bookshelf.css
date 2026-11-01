@@ -6,7 +6,7 @@
 @media(max-width:360px){.right-page h2{font-size:21px}.left-page,.right-page{padding-left:12px;padding-right:12px}.open-book{height:405px}.shelf-row{gap:26px;padding-left:24px;padding-right:24px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}.open-book{will-change:auto}}
 
-@media(min-width:1000px){main{max-width:1104px;margin:auto;display:grid;grid-template-columns:1fr 520px;gap:72px;padding:26px 0 10px}.intro{text-align:left;align-self:start;padding:74px 0 0}.intro h1{font-size:64px;max-width:370px;letter-spacing:-3px}.intro-copy{margin-top:22px}.collection{width:520px}.shelf-row{gap:62px;padding-left:52px;padding-right:52px}.site-footer{margin-top:10px}}
+@media(min-width:1000px){main{max-width:1104px;margin:auto;display:grid;grid-template-columns:1fr 520px;gap:72px;padding:26px 0 10px}.intro{text-align:left;align-self:start;padding:74px 0 0}.intro h1{font-size:64px;max-width:370px;letter-spacing:-3px}.intro-copy{margin-top:22px}.collection{width:520px}.shelf-row{grid-template-columns:repeat(3,minmax(0,1fr));gap:30px;padding-left:35px;padding-right:35px}.site-footer{margin-top:10px}}
 @media(max-width:600px){.reading-space{padding:24px 14px}.open-book{height:440px}.close-book{margin-bottom:20px}.reader-hint{display:none}}
 @media(max-width:360px){.open-book{height:480px}}
 /* The open phone spread is two square pages side by side. */

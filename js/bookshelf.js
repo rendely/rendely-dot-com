@@ -39,15 +39,27 @@ function makeCover(book, index) {
   return canvas;
 }
 books.forEach((book,i)=>{
-  if(i%2===0){const row=document.createElement('div');row.className='shelf-row';shelves.append(row);}
   const cover=makeCover(book,i);covers.push(cover);
   const button=document.createElement('button');button.type='button';button.className='shelf-book';button.style.setProperty('--book-color',book.color);button.setAttribute('aria-label',`Open book: ${book.title}`);button.setAttribute('aria-haspopup','dialog');
   const img=document.createElement('img');img.src=cover.toDataURL();img.alt='';img.width=img.height=768;button.append(img);
   button.addEventListener('click',()=>openBook(i));
   button.addEventListener('pointerenter',()=>sceneAPI?.hover(i));button.addEventListener('pointerleave',()=>sceneAPI?.hover(-1));
   button.addEventListener('focus',()=>sceneAPI?.hover(i));button.addEventListener('blur',()=>sceneAPI?.hover(-1));
-  shelves.lastElementChild.append(button);buttons.push(button);
+  buttons.push(button);
 });
+
+const desktopLayout = matchMedia('(min-width: 1000px)');
+function arrangeShelves(){
+  const perRow = desktopLayout.matches ? 3 : 2;
+  shelves.replaceChildren();
+  buttons.forEach((button, i)=>{
+    if(i % perRow === 0){const row=document.createElement('div');row.className='shelf-row';shelves.append(row);}
+    shelves.lastElementChild.append(button);
+  });
+  sceneAPI?.layout();
+}
+arrangeShelves();
+desktopLayout.addEventListener('change', arrangeShelves);
 
 function animate(element,frames,options){const animation=element.animate(frames,{fill:'both',easing:'cubic-bezier(.22,.75,.2,1)',...options});animations.push(animation);return animation;}
 function cancelAnimations(){animations.forEach(a=>a.cancel());animations=[];}
@@ -121,7 +133,7 @@ async function initThree(){
     const shadow=new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(shadowCanvas),transparent:true,depthWrite:false}));shadow.position.z=-20;scene.add(shadow);
     scene.add(group);return{group,paper,face,back,shadow,baseY:0};
   });
-  const shelfMeshes=[...shelves.children].map(()=>{const mesh=new THREE.Mesh(new THREE.BoxGeometry(1,1,1),new THREE.MeshStandardMaterial({color:0xc9ccbf,roughness:.85}));scene.add(mesh);return mesh;});
+  const shelfMeshes=[];
   let hovered=-1,frame=0;
   function draw(){renderer.render(scene,camera);}
   function update(){
@@ -132,10 +144,11 @@ async function initThree(){
   function layout(){
     const bounds=stage.getBoundingClientRect();renderer.setSize(bounds.width,bounds.height,false);camera.right=bounds.width;camera.top=bounds.height;camera.updateProjectionMatrix();
     buttons.forEach((button,i)=>{const rect=button.getBoundingClientRect(),object=objects[i],size=button.offsetWidth;object.group.position.set(rect.left-bounds.left+rect.width/2,bounds.height-(rect.top-bounds.top)-rect.height/2,20);object.baseY=object.group.position.y;object.paper.scale.set(size-3,size-3,10);object.face.scale.set(size,size,1);object.back.scale.set(size+1,size+1,2);object.shadow.scale.set(size*1.45,size*.45,1);object.shadow.position.set(object.group.position.x+7,object.baseY-size*.47,-20);});
-    shelfMeshes.forEach((mesh,i)=>{const rect=shelves.children[i].getBoundingClientRect();mesh.scale.set(rect.width-20,7,18);mesh.position.set(bounds.width/2,bounds.height-(rect.bottom-bounds.top)+3.5,4);});draw();
+    while(shelfMeshes.length < shelves.children.length){const mesh=new THREE.Mesh(new THREE.BoxGeometry(1,1,1),new THREE.MeshStandardMaterial({color:0xc9ccbf,roughness:.85}));scene.add(mesh);shelfMeshes.push(mesh);}
+    shelfMeshes.forEach((mesh,i)=>{mesh.visible=i<shelves.children.length;if(!mesh.visible)return;const rect=shelves.children[i].getBoundingClientRect();mesh.scale.set(rect.width-20,7,18);mesh.position.set(bounds.width/2,bounds.height-(rect.bottom-bounds.top)+3.5,4);});draw();
   }
   const observer=new ResizeObserver(layout);observer.observe(stage);
-  sceneAPI={hover(index){hovered=index;requestDraw();},select(index){objects.forEach((object,i)=>{object.group.visible=i!==index;object.shadow.visible=i!==index;});requestDraw();}};
+  sceneAPI={layout,hover(index){hovered=index;requestDraw();},select(index){objects.forEach((object,i)=>{object.group.visible=i!==index;object.shadow.visible=i!==index;});requestDraw();}};
   renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();stage.classList.remove('webgl-ready');renderer.domElement.style.visibility='hidden';});
   renderer.domElement.addEventListener('webglcontextrestored',()=>{renderer.domElement.style.visibility='';layout();stage.classList.add('webgl-ready');});
   layout();stage.classList.add('webgl-ready');if(selected>=0)sceneAPI.select(selected);
