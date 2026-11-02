@@ -29,7 +29,9 @@ function makeCover(book, index) {
   if(index===2){for(let i=0;i<6;i++){ctx.strokeRect(-132+i*21,-105+i*15,200,165);}}
   if(index===3){for(let i=0;i<5;i++){ctx.beginPath();ctx.moveTo(-146,-98+i*43);ctx.lineTo(-55,-44+i*26);ctx.lineTo(26,-96+i*22);ctx.lineTo(143,-126+i*35);ctx.stroke();}}
   if(index===4){for(let i=0;i<5;i++){ctx.beginPath();ctx.ellipse(0,0,145,35+i*19,-.35,0,Math.PI*2);ctx.stroke();}}
-  if(index===5){ctx.font='bold 184px Georgia';ctx.textAlign='center';ctx.fillText('mr',0,55);}
+  if(index===5){for(let i=0;i<6;i++){ctx.save();ctx.rotate(i*Math.PI/6);ctx.strokeRect(-115,-115,230,230);ctx.restore();}}
+  if(index===6){for(let i=0;i<6;i++){ctx.beginPath();ctx.arc(0,0,35+i*22,Math.PI*.15,Math.PI*1.85);ctx.stroke();}}
+  if(index===7){for(let i=0;i<5;i++){const r=65+i*23;ctx.beginPath();for(let j=0;j<6;j++){const a=Math.PI/3*j-Math.PI/2;const x=Math.cos(a)*r,y=Math.sin(a)*r;if(j===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}ctx.closePath();ctx.stroke();}}
   ctx.restore();
   ctx.font='500 78px Arial';ctx.fillStyle=book.ink;
   const words=book.title.split(' '), lines=[];let line='';
