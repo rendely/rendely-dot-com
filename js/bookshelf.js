@@ -31,7 +31,7 @@ function makeCover(book, index) {
   if(index===4){for(let i=0;i<5;i++){ctx.beginPath();ctx.ellipse(0,0,145,35+i*19,-.35,0,Math.PI*2);ctx.stroke();}}
   if(index===5){ctx.font='bold 184px Georgia';ctx.textAlign='center';ctx.fillText('mr',0,55);}
   ctx.restore();
-  ctx.font='500 68px Arial';ctx.fillStyle=book.ink;
+  ctx.font='500 72px Arial';ctx.fillStyle=book.ink;
   const words=book.title.split(' '), lines=[];let line='';
   for(const word of words){const test=line?`${line} ${word}`:word;if(ctx.measureText(test).width>635&&line){lines.push(line);line=word;}else line=test;}lines.push(line);
   lines.forEach((text,i)=>ctx.fillText(text,65,685-(lines.length-1-i)*74));
@@ -50,7 +50,7 @@ books.forEach((book,i)=>{
 
 const desktopLayout = matchMedia('(min-width: 1000px)');
 function arrangeShelves(){
-  const perRow = desktopLayout.matches ? 3 : 2;
+  const perRow = desktopLayout.matches ? 4 : 2;
   shelves.replaceChildren();
   buttons.forEach((button, i)=>{
     if(i % perRow === 0){const row=document.createElement('div');row.className='shelf-row';shelves.append(row);}

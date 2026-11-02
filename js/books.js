@@ -10,7 +10,7 @@ export const books = [
   },
   {
     "title": "Gemini in Chrome Agentic Capabilities",
-    "description": "How we're weaving Gemini into Chrome to unlock richer, agentic workflows across the browser.",
+    "description": "A talk about how Gemini can take actions and help people complete tasks in Chrome.",
     "url": "https://www.youtube.com/watch?v=khX5-VHoYds",
     "image": "images/gic.jpg",
     "category": "Talk",
@@ -19,7 +19,7 @@ export const books = [
   },
   {
     "title": "How to Build Generative AI Products",
-    "description": "Product manager-friendly foundations for building with GenAI.",
+    "description": "A guide for product managers to the foundations of building generative AI products.",
     "url": "https://www.rendely.com/posts/0-genai-pm-intro.html",
     "image": "images/ai-teacher.jpeg",
     "category": "Field notes",
@@ -28,7 +28,7 @@ export const books = [
   },
   {
     "title": "Evaluating GenAI Products",
-    "description": "A practical lens for measuring and iterating on GenAI experiences.",
+    "description": "A guide to evaluating AI product responses and using the results to improve them.",
     "url": "https://www.rendely.com/posts/1-evals-pm-intro.html",
     "image": "images/eval.jpg",
     "category": "Field notes",
@@ -55,7 +55,7 @@ export const books = [
   },
   {
     "title": "Certainly Uncertain",
-    "description": "Philosophize with me.",
+    "description": "A podcast exploring philosophy, big questions, and the uncertainty of everyday life.",
     "url": "https://open.spotify.com/show/2fPaYIMGV3P20sBKonSSzv",
     "image": "images/podcast.jpg",
     "category": "Podcast",
@@ -64,7 +64,7 @@ export const books = [
   },
   {
     "title": "LinkedIn",
-    "description": "Get to know me.",
+    "description": "My LinkedIn profile, with more about my work and experience.",
     "url": "https://linkedin.com/in/matthewrendely",
     "image": "images/linkedin.jpg",
     "category": "About me",

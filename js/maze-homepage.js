@@ -317,7 +317,7 @@ function createPosterTexture(book, index, onLoadedCallback) {
     ctx.fillStyle = '#7a8178';
     ctx.font = '600 18px monospace';
     ctx.textAlign = 'right';
-    ctx.fillText(`0${index + 1} / 06`, 696, 94);
+    ctx.fillText(`0${index + 1} / ${String(books.length).padStart(2, '0')}`, 696, 94);
     ctx.textAlign = 'left';
 
     // Artwork / Project Image Container
@@ -326,15 +326,12 @@ function createPosterTexture(book, index, onLoadedCallback) {
     ctx.fillRect(imgX, imgY, imgW, imgH);
 
     if (imageObj && imageObj.complete && imageObj.naturalWidth > 0) {
-      // Draw actual loaded image cover
+      // Fit the entire image within the poster artwork area.
       const iw = imageObj.naturalWidth;
       const ih = imageObj.naturalHeight;
-      const scale = Math.max(imgW / iw, imgH / ih);
-      const sw = imgW / scale;
-      const sh = imgH / scale;
-      const sx = (iw - sw) / 2;
-      const sy = (ih - sh) / 2;
-      ctx.drawImage(imageObj, sx, sy, sw, sh, imgX, imgY, imgW, imgH);
+      const scale = Math.min(imgW / iw, imgH / ih);
+      const width = iw * scale, height = ih * scale;
+      ctx.drawImage(imageObj, imgX + (imgW - width) / 2, imgY + (imgH - height) / 2, width, height);
     } else {
       // Elegant placeholder pattern
       ctx.fillStyle = book.color || '#365348';
@@ -384,7 +381,7 @@ function createPosterTexture(book, index, onLoadedCallback) {
       }
     }
     descLines.push(dCur);
-    descLines.slice(0, 2).forEach((dl, i) => {
+    descLines.slice(0, 3).forEach((dl, i) => {
       ctx.fillText(dl, 72, 824 + i * 28);
     });
 
@@ -1100,7 +1097,7 @@ export function initMazeHomepage() {
     }
 
     document.getElementById('card-kicker').textContent = book.category.toUpperCase();
-    document.getElementById('card-index').textContent = `0${index + 1} / 06`;
+    document.getElementById('card-index').textContent = `0${index + 1} / ${String(books.length).padStart(2, '0')}`;
     document.getElementById('card-title').textContent = book.title;
     document.getElementById('card-desc').textContent = book.description;
     document.getElementById('card-img').src = book.image;
