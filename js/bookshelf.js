@@ -51,6 +51,7 @@ books.forEach((book,i)=>{
 });
 
 const desktopLayout = matchMedia('(min-width: 1000px)');
+const phoneLayout = matchMedia('(max-width: 600px)');
 function arrangeShelves(){
   const perRow = desktopLayout.matches ? 4 : 2;
   shelves.replaceChildren();
@@ -81,9 +82,19 @@ async function openBook(index){
   document.querySelector('#preview-category').textContent=book.category;
   const preview=document.querySelector('#preview-image');preview.src=book.image;preview.alt=book.title;
   document.querySelector('#book-link').href=book.url;
+  const linkLabels = {Launch:'Read article', Talk:'Watch video', 'Field notes':'Read article', 'AI Video':'Watch video', Podcast:'Listen to podcast', 'About me':'View profile'};
+  document.querySelector('#book-link').innerHTML=`${linkLabels[book.category] || 'Open link'} <span aria-hidden="true">↗</span>`;
   document.querySelector('#flying-cover-image').src=covers[index].toDataURL();
   spread.classList.remove('settled');
   document.body.classList.add('reading');dialog.showModal();
+  dialog.scrollTop=0;
+  if(phoneLayout.matches){
+    buttons[index].classList.add('taken');sceneAPI?.select(index);
+    const animation=animate(spread,[{opacity:0,transform:'translateY(16px)'},{opacity:1,transform:'none'}],{duration:reducedMotion.matches?0:350});
+    try{await animation.finished;}catch{return;}
+    if(phase==='opening'){phase='open';spread.classList.add('settled');}
+    return;
+  }
   const origin=sourceTransform();
   buttons[index].classList.add('taken');sceneAPI?.select(index);
   const duration=reducedMotion.matches?0:620;
@@ -97,6 +108,13 @@ async function openBook(index){
 async function closeBook(){
   if(phase==='idle'||phase==='closing')return;
   phase='closing';spread.classList.remove('settled');
+  if(phoneLayout.matches){
+    cancelAnimations();
+    const animation=animate(spread,[{opacity:1},{opacity:0}],{duration:reducedMotion.matches?0:180});
+    try{await animation.finished;}catch{return;}
+    const previous=selected;dialog.close();document.body.classList.remove('reading');buttons[previous].classList.remove('taken');selected=-1;sceneAPI?.select(-1);cancelAnimations();phase='idle';buttons[previous].focus({preventScroll:true});
+    return;
+  }
   const current={spread:getComputedStyle(spread).transform,front:getComputedStyle(front).transform,left:getComputedStyle(left).transform};
   cancelAnimations();
   const origin=sourceTransform();const duration=reducedMotion.matches?0:400;

@@ -14,3 +14,19 @@
 
 /* Wider desktop shelves leave room for four comfortably sized books. */
 @media (min-width:1000px){main{max-width:1300px;grid-template-columns:minmax(250px,1fr) minmax(0,760px);gap:48px;padding-left:32px;padding-right:32px}.collection{width:100%}.shelf-row{grid-template-columns:repeat(4,minmax(0,1fr));gap:30px}.collection-heading,.collection-heading h2{font-size:13px}}
+
+/* On phones, give the book's content a full-width, scrollable page. */
+@media(max-width:600px){
+  .reading-space{min-height:100%;justify-content:flex-start;padding:24px 18px 40px}
+  .close-book{align-self:flex-start;margin:0 0 18px}
+  .open-book{display:flex;flex-direction:column;width:min(100%,420px);height:auto;aspect-ratio:auto;transform-origin:center;box-shadow:0 20px 36px #18231940}
+  .left-page,.right-page{height:auto;min-height:0;border:0;box-shadow:none;border-radius:0;padding:24px 26px 24px 32px;background:linear-gradient(90deg,#e5e0d2,#fcfaf2 18px)}
+  .left-page{padding-bottom:0;border-radius:4px 4px 0 0}
+  .left-page .page-kicker,.image-caption,.page-number,.flying-cover{display:none}
+  .left-page img{width:100%;height:auto;max-height:240px;aspect-ratio:16/10;object-fit:contain;margin:0;background:#eeeee6}
+  .right-page{border-radius:0 0 4px 4px;padding-top:26px;padding-bottom:30px}
+  .right-page .page-kicker{font-size:11px;letter-spacing:1.5px;margin:0 0 14px}
+  .right-page h2{font-size:30px;line-height:1.12;margin:0 0 16px}
+  .right-page>p:not(.page-kicker){display:block;font-size:16px;line-height:1.65;margin:0 0 20px}
+  .visit-link{font-size:15px;line-height:1.4;min-height:48px;padding:12px 0}
+}
