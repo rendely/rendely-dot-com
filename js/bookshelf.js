@@ -55,9 +55,9 @@ const squirrel = document.createElement('span');
 squirrel.className = 'shelf-squirrel';
 squirrel.setAttribute('aria-hidden', 'true');
 squirrel.innerHTML = `<svg viewBox="0 0 80 110" xmlns="http://www.w3.org/2000/svg">
-  <path d="M57 91c19 1 24-13 15-21 2 10-6 13-13 10" fill="#8f492a" stroke="#633521" stroke-width="2"/>
-  <path d="M22 90c0-19 7-29 18-29s18 10 18 29v14H22Z" fill="#a85a32" stroke="#633521" stroke-width="2"/>
-  <ellipse cx="40" cy="88" rx="11" ry="15" fill="#f5d9b1"/>
+  <path d="M53 103c17 1 21-6 17-9 0 6-7 5-12 4" fill="#8f492a" stroke="#633521" stroke-width="2"/>
+  <path d="M27 100c0-13 5-20 13-20s13 7 13 20v4H27Z" fill="#a85a32" stroke="#633521" stroke-width="2"/>
+  <ellipse cx="40" cy="95" rx="8" ry="9" fill="#f5d9b1"/>
   <path d="M18 35C4 31 3 14 14 9c7-3 15 3 16 13M62 35c14-4 15-21 4-26-7-3-15 3-16 13" fill="#8f492a" stroke="#633521" stroke-width="2"/>
   <path d="M15 29c-5-5-4-13 1-15 4-1 8 3 9 9M65 29c5-5 4-13-1-15-4-1-8 3-9 9" fill="#e5a58a"/>
   <path d="M10 46C10 25 22 17 40 17s30 8 30 29c0 17-13 25-30 25S10 63 10 46Z" fill="#a85a32" stroke="#633521" stroke-width="2"/>
@@ -83,34 +83,43 @@ function squirrelVisit() {
   lastSquirrelBook = index;
   const book = buttons[index].getBoundingClientRect();
   const bounds = stage.getBoundingClientRect();
-  const size = Math.min(56, book.width * .32);
+  const size = Math.min(52, book.width * .24);
   const height = size * 110 / 80;
   const angle = Math.random() * 90 - 45;
-  // Start entirely inside the cover. The cover and WebGL canvas both sit
-  // above this layer, so they naturally occlude the moving character.
-  const x = book.left - bounds.left + book.width / 2 - size / 2;
-  const y = book.top - bounds.top + book.height / 2 - height / 2;
-  const edge = Math.floor(Math.random() * 3);
-  let peekX = x, peekY = y;
-  if (edge === 0) {
-    peekX += (Math.random() - .5) * book.width * .3;
-    peekY = book.top - bounds.top - height * .55;
-  } else {
-    peekX = edge === 1
-      ? book.left - bounds.left - size * .65
-      : book.right - bounds.left - size * .35;
-    peekY = book.top - bounds.top + book.height * .18 - height / 2;
-  }
+  const radians = angle * Math.PI / 180;
+  const sin = Math.sin(radians), cos = Math.cos(radians);
+  const top = book.top - bounds.top;
+  const left = book.left - bounds.left;
+  const halfWidth = (size * cos + height * Math.abs(sin)) / 2;
+  const halfHeight = (height * cos + size * Math.abs(sin)) / 2;
+  // Keep the torso and tail below the cover's top edge, even when tilted.
+  const bodyCorners = [[27,80],[53,80],[27,104],[53,104],
+    [53,94],[72,94],[53,105],[72,105]];
+  const bodyTop = Math.min(...bodyCorners.map(([x,y]) =>
+    (x - 40) * size / 80 * sin + (y - 55) * height / 110 * cos));
+  const peekCenterY = top - bodyTop + .5;
+  const hiddenCenterY = top + halfHeight + 2;
+  const travel = (hiddenCenterY - peekCenterY) / cos;
+  // Local up is the head direction: (sin(angle), -cos(angle)).
+  // Both positions lie on that axis, so there is no sideways drift.
+  const dx = travel * sin;
+  const minX = left + halfWidth + Math.max(dx, 0) + 1;
+  const maxX = left + book.width - halfWidth + Math.min(dx, 0) - 1;
+  const peekCenterX = minX + Math.random() * (maxX - minX);
+  const x = peekCenterX - dx - size / 2;
+  const y = hiddenCenterY - height / 2;
+  const peekX = peekCenterX - size / 2;
+  const peekY = peekCenterY - height / 2;
   squirrel.style.width = `${size}px`;
   squirrel.hidden = false;
   const hiddenPose = `translate(${x}px, ${y}px) rotate(${angle}deg)`;
   const peekPose = `translate(${peekX}px, ${peekY}px) rotate(${angle}deg)`;
   squirrelAnimation = squirrel.animate([
-    { transform: hiddenPose, offset: 0 },
-    { transform: peekPose, offset: .18 },
-    { transform: peekPose, offset: .82 },
+    { transform: hiddenPose, offset: 0, easing: 'cubic-bezier(.22,.68,.3,1)' },
+    { transform: peekPose, offset: .23 },
+    { transform: peekPose, offset: .77, easing: 'cubic-bezier(.55,0,.8,.45)' },
     { transform: hiddenPose, offset: 1 },
-  ], { duration: reducedMotion.matches ? 0 : 2400, easing: 'ease-in-out', fill: 'both' });
+  ], { duration: reducedMotion.matches ? 0 : 2400, easing: 'linear', fill: 'both' });
   squirrelAnimation.onfinish = hideSquirrel;
 }
 setInterval(squirrelVisit, 5000);
