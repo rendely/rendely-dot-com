@@ -67,20 +67,55 @@ squirrel.innerHTML = `<svg viewBox="0 0 80 110" xmlns="http://www.w3.org/2000/sv
   <path d="M36 49q4-4 8 0-1 4-4 4t-4-4Zm4 4q0 5-5 5m5-5q0 5 5 5" fill="#633521" stroke="#633521" stroke-width="1.5" stroke-linecap="round"/>
   <circle cx="21" cy="49" r="3" fill="#eaa794" opacity=".7"/><circle cx="59" cy="49" r="3" fill="#eaa794" opacity=".7"/>
 </svg>`;
-let lastSquirrelBook = -1;
+stage.append(squirrel);
+let lastSquirrelBook = -1, squirrelAnimation;
+function hideSquirrel() {
+  squirrelAnimation?.cancel();
+  squirrelAnimation = null;
+  squirrel.hidden = true;
+}
+hideSquirrel();
 function squirrelVisit() {
   if (phase !== 'idle' || document.hidden) return;
+  hideSquirrel();
   let index = Math.floor(Math.random() * buttons.length);
   if (buttons.length > 1 && index === lastSquirrelBook) index = (index + 1 + Math.floor(Math.random() * (buttons.length - 1))) % buttons.length;
   lastSquirrelBook = index;
-  squirrel.classList.remove('peeking');
-  squirrel.classList.toggle('from-right', Math.random() < .5);
-  squirrel.style.setProperty('--tilt', `${Math.round(Math.random() * 90 - 45)}deg`);
-  buttons[index].append(squirrel);
-  requestAnimationFrame(() => squirrel.classList.add('peeking'));
-  setTimeout(() => squirrel.classList.remove('peeking'), 2000);
+  const book = buttons[index].getBoundingClientRect();
+  const bounds = stage.getBoundingClientRect();
+  const size = Math.min(56, book.width * .32);
+  const height = size * 110 / 80;
+  const angle = Math.random() * 90 - 45;
+  // Start entirely inside the cover. The cover and WebGL canvas both sit
+  // above this layer, so they naturally occlude the moving character.
+  const x = book.left - bounds.left + book.width / 2 - size / 2;
+  const y = book.top - bounds.top + book.height / 2 - height / 2;
+  const edge = Math.floor(Math.random() * 3);
+  let peekX = x, peekY = y;
+  if (edge === 0) {
+    peekX += (Math.random() - .5) * book.width * .3;
+    peekY = book.top - bounds.top - height * .55;
+  } else {
+    peekX = edge === 1
+      ? book.left - bounds.left - size * .65
+      : book.right - bounds.left - size * .35;
+    peekY = book.top - bounds.top + book.height * .18 - height / 2;
+  }
+  squirrel.style.width = `${size}px`;
+  squirrel.hidden = false;
+  const hiddenPose = `translate(${x}px, ${y}px) rotate(${angle}deg)`;
+  const peekPose = `translate(${peekX}px, ${peekY}px) rotate(${angle}deg)`;
+  squirrelAnimation = squirrel.animate([
+    { transform: hiddenPose, offset: 0 },
+    { transform: peekPose, offset: .18 },
+    { transform: peekPose, offset: .82 },
+    { transform: hiddenPose, offset: 1 },
+  ], { duration: reducedMotion.matches ? 0 : 2400, easing: 'ease-in-out', fill: 'both' });
+  squirrelAnimation.onfinish = hideSquirrel;
 }
 setInterval(squirrelVisit, 5000);
+document.addEventListener('visibilitychange', hideSquirrel);
+window.addEventListener('resize', hideSquirrel);
 
 const desktopLayout = matchMedia('(min-width: 1000px)');
 const phoneLayout = matchMedia('(max-width: 600px)');
@@ -107,6 +142,7 @@ function sourceTransform(){
 }
 async function openBook(index){
   if(phase!=='idle')return;
+  hideSquirrel();
   phase='opening';selected=index;const book=books[index];
   document.querySelector('#book-title').textContent=book.title;
   document.querySelector('#book-description').textContent=book.description;
