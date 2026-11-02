@@ -54,7 +54,10 @@ books.forEach((book,i)=>{
 const squirrel = document.createElement('span');
 squirrel.className = 'shelf-squirrel';
 squirrel.setAttribute('aria-hidden', 'true');
-squirrel.innerHTML = `<svg viewBox="0 0 80 75" xmlns="http://www.w3.org/2000/svg">
+squirrel.innerHTML = `<svg viewBox="0 0 80 110" xmlns="http://www.w3.org/2000/svg">
+  <path d="M57 91c19 1 24-13 15-21 2 10-6 13-13 10" fill="#8f492a" stroke="#633521" stroke-width="2"/>
+  <path d="M22 90c0-19 7-29 18-29s18 10 18 29v14H22Z" fill="#a85a32" stroke="#633521" stroke-width="2"/>
+  <ellipse cx="40" cy="88" rx="11" ry="15" fill="#f5d9b1"/>
   <path d="M18 35C4 31 3 14 14 9c7-3 15 3 16 13M62 35c14-4 15-21 4-26-7-3-15 3-16 13" fill="#8f492a" stroke="#633521" stroke-width="2"/>
   <path d="M15 29c-5-5-4-13 1-15 4-1 8 3 9 9M65 29c5-5 4-13-1-15-4-1-8 3-9 9" fill="#e5a58a"/>
   <path d="M10 46C10 25 22 17 40 17s30 8 30 29c0 17-13 25-30 25S10 63 10 46Z" fill="#a85a32" stroke="#633521" stroke-width="2"/>
