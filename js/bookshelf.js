@@ -19,8 +19,8 @@ function makeCover(book, index) {
   const binding = ctx.createLinearGradient(0,0,68,0);
   binding.addColorStop(0,'#00000030'); binding.addColorStop(.45,'#00000005'); binding.addColorStop(.6,'#ffffff18'); binding.addColorStop(1,'#ffffff00');
   ctx.fillStyle=binding;ctx.fillRect(0,0,68,768);
-  ctx.fillStyle=book.ink;ctx.font='24px Arial';ctx.fillText(book.category.toUpperCase(),65,69);
-  ctx.textAlign='right';ctx.fillText(`0${index+1}`,714,69);ctx.textAlign='left';
+  ctx.fillStyle=book.ink;ctx.font='58px Arial';ctx.fillText(book.category.toUpperCase(),65,80,540);
+  ctx.font='24px Arial';ctx.textAlign='right';ctx.fillText(`0${index+1}`,714,69);ctx.textAlign='left';
   // Simple geometric print motifs make each volume recognizable without relying on color alone.
   ctx.save();ctx.globalAlpha=.72;ctx.strokeStyle=book.ink;ctx.lineWidth=3;
   ctx.translate(388,250);
@@ -31,10 +31,10 @@ function makeCover(book, index) {
   if(index===4){for(let i=0;i<5;i++){ctx.beginPath();ctx.ellipse(0,0,145,35+i*19,-.35,0,Math.PI*2);ctx.stroke();}}
   if(index===5){ctx.font='bold 184px Georgia';ctx.textAlign='center';ctx.fillText('mr',0,55);}
   ctx.restore();
-  ctx.font='500 72px Arial';ctx.fillStyle=book.ink;
+  ctx.font='500 78px Arial';ctx.fillStyle=book.ink;
   const words=book.title.split(' '), lines=[];let line='';
   for(const word of words){const test=line?`${line} ${word}`:word;if(ctx.measureText(test).width>635&&line){lines.push(line);line=word;}else line=test;}lines.push(line);
-  lines.forEach((text,i)=>ctx.fillText(text,65,685-(lines.length-1-i)*74));
+  lines.forEach((text,i)=>ctx.fillText(text,65,685-(lines.length-1-i)*84));
   ctx.globalAlpha=.5;ctx.fillRect(65,729,645,1);
   return canvas;
 }
