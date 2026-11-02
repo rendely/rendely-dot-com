@@ -50,6 +50,35 @@ books.forEach((book,i)=>{
   buttons.push(button);
 });
 
+// A little visitor moves between volumes, without interfering with the book controls.
+const squirrel = document.createElement('span');
+squirrel.className = 'shelf-squirrel';
+squirrel.setAttribute('aria-hidden', 'true');
+squirrel.innerHTML = `<svg viewBox="0 0 80 75" xmlns="http://www.w3.org/2000/svg">
+  <path d="M18 35C4 31 3 14 14 9c7-3 15 3 16 13M62 35c14-4 15-21 4-26-7-3-15 3-16 13" fill="#8f492a" stroke="#633521" stroke-width="2"/>
+  <path d="M15 29c-5-5-4-13 1-15 4-1 8 3 9 9M65 29c5-5 4-13-1-15-4-1-8 3-9 9" fill="#e5a58a"/>
+  <path d="M10 46C10 25 22 17 40 17s30 8 30 29c0 17-13 25-30 25S10 63 10 46Z" fill="#a85a32" stroke="#633521" stroke-width="2"/>
+  <path d="M18 49c0-9 10-14 22-8 12-6 22-1 22 8 0 11-10 17-22 17S18 60 18 49Z" fill="#f5d9b1"/>
+  <ellipse cx="27" cy="40" rx="3" ry="4" fill="#33251e"/><ellipse cx="53" cy="40" rx="3" ry="4" fill="#33251e"/>
+  <circle cx="28" cy="39" r="1" fill="white"/><circle cx="54" cy="39" r="1" fill="white"/>
+  <path d="M36 49q4-4 8 0-1 4-4 4t-4-4Zm4 4q0 5-5 5m5-5q0 5 5 5" fill="#633521" stroke="#633521" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="21" cy="49" r="3" fill="#eaa794" opacity=".7"/><circle cx="59" cy="49" r="3" fill="#eaa794" opacity=".7"/>
+</svg>`;
+let lastSquirrelBook = -1;
+function squirrelVisit() {
+  if (phase !== 'idle' || document.hidden) return;
+  let index = Math.floor(Math.random() * buttons.length);
+  if (buttons.length > 1 && index === lastSquirrelBook) index = (index + 1 + Math.floor(Math.random() * (buttons.length - 1))) % buttons.length;
+  lastSquirrelBook = index;
+  squirrel.classList.remove('peeking');
+  squirrel.classList.toggle('from-right', Math.random() < .5);
+  squirrel.style.setProperty('--tilt', `${Math.round(Math.random() * 90 - 45)}deg`);
+  buttons[index].append(squirrel);
+  requestAnimationFrame(() => squirrel.classList.add('peeking'));
+  setTimeout(() => squirrel.classList.remove('peeking'), 2000);
+}
+setInterval(squirrelVisit, 5000);
+
 const desktopLayout = matchMedia('(min-width: 1000px)');
 const phoneLayout = matchMedia('(max-width: 600px)');
 function arrangeShelves(){

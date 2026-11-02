@@ -30,3 +30,7 @@
   .right-page>p:not(.page-kicker){display:block;font-size:16px;line-height:1.65;margin:0 0 20px}
   .visit-link{font-size:15px;line-height:1.4;min-height:48px;padding:12px 0}
 }
+
+.shelf-squirrel{position:absolute;z-index:3;width:clamp(42px, 32%, 62px);top:-24%;left:-12%;pointer-events:none;opacity:0;transform:translateY(18px) rotate(var(--tilt, 0deg)) scale(.8);transform-origin:bottom center;transition:opacity .25s,transform .35s cubic-bezier(.2,.8,.3,1)}
+.shelf-squirrel.from-right{left:auto;right:-12%}.shelf-squirrel svg{display:block;width:100%;height:auto;filter:drop-shadow(0 2px 2px #39211533)}.shelf-squirrel.peeking{opacity:1;transform:translateY(0) rotate(var(--tilt, 0deg)) scale(1)}
+body.reading .shelf-squirrel{opacity:0}@media(prefers-reduced-motion:reduce){.shelf-squirrel{transition:none}}
