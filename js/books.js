@@ -36,15 +36,6 @@ export const books = [
     "ink": "#343c34"
   },
   {
-    "title": "Mistborn trailer",
-    "description": "A fan-made trailer inspired by Mistborn, created to explore AI video generation.",
-    "url": "https://www.dropbox.com/scl/fi/2z4gqn3e80s09i89wg2v7/Mistborn-trailer3.mp4?rlkey=ze9u1phab0jhghzpbsk0zikcm&st=0zk3b3cm&dl=0",
-    "image": "images/mistborn-thumbnail.jpg",
-    "category": "AI Video",
-    "color": "#303a3c",
-    "ink": "#f0eee4"
-  },
-  {
     "title": "Laser mower",
     "description": "A comedic short about an inventor building a laser lawn mower, made to explore voices and camera movement in AI video generation.",
     "url": "https://www.dropbox.com/scl/fi/f15xb6eq8zj63mh98610e/Laser-mower.mp4?rlkey=2edeozqx2ctn3f4mr5ad7liyt&st=lu2ig7sc&dl=0",
